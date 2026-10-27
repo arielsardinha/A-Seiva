@@ -1,0 +1,770 @@
+/* O rádio é desenhado só com CSS/SVG. Tudo em `em`: o aparelho escala com a largura do contêiner. */
+
+.radio-wrap {
+  container-type: inline-size;
+  width: min(100%, 38rem, calc((100dvh - 15rem) / 1.42));
+  min-width: 15rem;
+}
+
+@media (max-width: 899px) {
+  .radio-wrap {
+    width: min(100%, 36rem);
+  }
+}
+
+.radio {
+  /* 100cqw = 40em */
+  font-size: clamp(9.5px, 2.5cqw, 16px);
+  position: relative;
+  padding-top: 7.6em;
+  color: #c3cfbf;
+  user-select: none;
+
+  --lcd: #2b3a30;
+  --lcd-fundo: #070a08;
+  --lcd-brilho: transparent;
+}
+
+.radio[data-estado='buscando'] {
+  --lcd: #ffb224;
+  --lcd-fundo: #1c1305;
+  --lcd-brilho: rgba(255, 178, 36, 0.55);
+}
+
+.radio[data-estado='conectado'] {
+  --lcd: #62ff93;
+  --lcd-fundo: #06180d;
+  --lcd-brilho: rgba(98, 255, 147, 0.5);
+}
+
+.radio[data-estado='alerta'] {
+  --lcd: #ff9a2e;
+  --lcd-fundo: #251106;
+  --lcd-brilho: rgba(255, 120, 30, 0.6);
+}
+
+.radio[data-fim='true'] {
+  --lcd: #ffb224;
+  --lcd-fundo: #1c1305;
+  --lcd-brilho: rgba(255, 178, 36, 0.55);
+}
+
+/* ---- antena --------------------------------------------------------------- */
+.radio__antena {
+  position: absolute;
+  top: 0;
+  right: 5.4em;
+  z-index: 2;
+  width: 1.7em;
+  height: 9.35em;
+  transform-origin: 50% 92%;
+  pointer-events: none;
+}
+
+.radio[data-estado='buscando'] .radio__antena {
+  animation: antena-balanca 3.4s ease-in-out infinite;
+}
+
+.antena__base {
+  fill: #232a25;
+  stroke: #0b0e0c;
+  stroke-width: 1.5;
+}
+
+.antena__trecho {
+  fill: #8b968d;
+  stroke: #424b44;
+  stroke-width: 1;
+}
+
+.antena__ponta {
+  fill: #3b453e;
+  stroke: #0b0e0c;
+  stroke-width: 1.2;
+}
+
+.radio:not([data-estado='desligado']) .antena__ponta {
+  fill: var(--lcd);
+  filter: drop-shadow(0 0 3px var(--lcd-brilho));
+}
+
+/* ---- corpo ---------------------------------------------------------------- */
+.radio__corpo {
+  position: relative;
+  display: grid;
+  gap: 1.1em;
+  padding: 1.5em 1.8em 1.4em;
+  border-radius: 2.1em;
+  background:
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.018) 0 2px, transparent 2px 5px),
+    linear-gradient(160deg, #3b463f 0%, #29322c 42%, #1b221d 100%);
+  box-shadow:
+    inset 0 0.08em 0 rgba(255, 255, 255, 0.16),
+    inset 0 -0.3em 0.8em rgba(0, 0, 0, 0.5),
+    0 0 0 0.16em #0b0f0c,
+    0 1.4em 3em rgba(0, 0, 0, 0.65);
+  transition: box-shadow 0.4s;
+}
+
+.radio[data-estado='alerta'] .radio__corpo {
+  box-shadow:
+    inset 0 0.08em 0 rgba(255, 255, 255, 0.16),
+    inset 0 -0.3em 0.8em rgba(0, 0, 0, 0.5),
+    0 0 0 0.16em #0b0f0c,
+    0 0 3.2em rgba(255, 130, 30, 0.28),
+    0 1.4em 3em rgba(0, 0, 0, 0.65);
+}
+
+.parafuso {
+  position: absolute;
+  width: 0.95em;
+  height: 0.95em;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #8a958c, #2a312c 72%);
+  box-shadow: 0 0 0 0.08em rgba(0, 0, 0, 0.55);
+}
+
+.parafuso::after {
+  content: '';
+  position: absolute;
+  inset: 44% 12%;
+  background: rgba(0, 0, 0, 0.6);
+  transform: rotate(35deg);
+}
+
+.parafuso--a {
+  top: 0.75em;
+  left: 0.8em;
+}
+
+.parafuso--b {
+  top: 0.75em;
+  right: 0.8em;
+}
+
+.parafuso--c {
+  bottom: 0.75em;
+  left: 0.8em;
+}
+
+.parafuso--d {
+  right: 0.8em;
+  bottom: 0.75em;
+}
+
+/* ---- topo: marca, LEDs e botão de liga/desliga ------------------------------ */
+.radio__topo {
+  display: flex;
+  align-items: center;
+  gap: 1.2em;
+}
+
+.radio__marca {
+  display: grid;
+  font: 800 1.25em/1.05 var(--fonte-mono);
+  letter-spacing: 0.14em;
+  color: #cbd6c7;
+}
+
+.radio__marca small {
+  font-size: max(10px, 0.52em);
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  color: #8e9c8f;
+}
+
+.leds {
+  display: flex;
+  gap: 1.1em;
+  margin-left: auto;
+}
+
+.led {
+  display: grid;
+  justify-items: center;
+  gap: 0.35em;
+}
+
+.led__luz {
+  --led: #3dff7f;
+  width: 1.2em;
+  height: 1.2em;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--led) 14%, #0b0f0c);
+  box-shadow:
+    inset 0 0 0 0.12em #000,
+    0 0 0 0.12em #46544b;
+  transition: background 0.2s;
+}
+
+.led__luz--vermelho {
+  --led: #ff4a38;
+}
+
+.led__luz--ambar {
+  --led: #ffb224;
+}
+
+.led__luz:not([data-modo='apagado']) {
+  background: radial-gradient(circle at 35% 30%, rgba(255, 255, 255, 0.85), var(--led) 42%, color-mix(in srgb, var(--led) 55%, #000));
+  box-shadow:
+    inset 0 0 0 0.12em rgba(0, 0, 0, 0.55),
+    0 0 0 0.12em #46544b,
+    0 0 1em 0.25em color-mix(in srgb, var(--led) 65%, transparent);
+}
+
+.led__luz[data-modo='pisca'] {
+  animation: pisca 1.5s ease-in-out infinite;
+}
+
+.led__luz[data-modo='tremula'] {
+  animation: tremula 1.3s steps(1) infinite;
+}
+
+.led__nome,
+.rotulo {
+  font: 700 max(10px, 0.62em) var(--fonte-mono);
+  letter-spacing: 0.14em;
+  color: #a2b0a2;
+}
+
+.power {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 3.2em;
+  height: 3.2em;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 28%, #5a665d, #232a25 70%);
+  box-shadow:
+    inset 0 0.08em 0 rgba(255, 255, 255, 0.25),
+    0 0 0 0.18em #0b0f0c,
+    0 0.25em 0.6em rgba(0, 0, 0, 0.6);
+  color: #9aa89b;
+  cursor: pointer;
+}
+
+.power:active {
+  transform: translateY(0.08em);
+}
+
+.power svg {
+  width: 56%;
+  height: 56%;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+}
+
+.power[aria-pressed='true'] {
+  color: #62ff93;
+  box-shadow:
+    inset 0 0.08em 0 rgba(255, 255, 255, 0.25),
+    0 0 0 0.18em #0b0f0c,
+    0 0 1.1em 0.2em rgba(98, 255, 147, 0.45);
+}
+
+.power[aria-pressed='true'] svg {
+  filter: drop-shadow(0 0 3px rgba(98, 255, 147, 0.9));
+}
+
+/* ---- visor LCD -------------------------------------------------------------- */
+.visor {
+  padding: 0.55em;
+  border-radius: 1.1em;
+  background: #080b09;
+  box-shadow:
+    inset 0 0.2em 0.7em #000,
+    0 0.08em 0 rgba(255, 255, 255, 0.12);
+}
+
+.visor__tela {
+  position: relative;
+  min-height: 10.2em;
+  padding: 0.85em 1.1em 0.9em;
+  overflow: hidden;
+  border-radius: 0.7em;
+  background: var(--lcd-fundo);
+  color: var(--lcd);
+  font-family: var(--fonte-mono);
+  transition: background 0.5s;
+}
+
+/* grade de pixels e reflexo do vidro */
+.visor__tela::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(120deg, rgba(255, 255, 255, 0.07) 0%, transparent 38%),
+    repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.22) 0 1px, transparent 1px 3px);
+}
+
+.radio[data-estado='alerta'] .visor__tela {
+  animation: lcd-tremor 3.1s steps(1) infinite;
+}
+
+.visor__topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8em;
+  font-size: 1.3em;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-shadow: 0 0 0.6em var(--lcd-brilho);
+}
+
+.visor__etiqueta {
+  padding: 0.05em 0.5em;
+  border: 0.1em solid currentColor;
+  border-radius: 0.3em;
+  font-size: 0.62em;
+  letter-spacing: 0.14em;
+}
+
+.visor__corpo {
+  display: flex;
+  align-items: center;
+  gap: 0.9em;
+  min-height: 5.2em;
+  margin-top: 0.7em;
+}
+
+.visor__mensagem {
+  flex: 1;
+  margin: 0;
+  font-size: 1.75em;
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: 0.06em;
+  overflow-wrap: anywhere;
+  text-shadow: 0 0 0.55em var(--lcd-brilho);
+  animation: visor-entra 0.4s steps(7) both;
+}
+
+.visor__apagado {
+  margin: 0;
+  padding-top: 3.3em;
+  text-align: center;
+  font-size: 1.1em;
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  color: #26372c;
+}
+
+/* ---- sinal e sintonia ------------------------------------------------------- */
+.radio__meio {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 1.6em;
+  align-items: end;
+}
+
+.sinal__barras {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.4em;
+  height: 4.2em;
+  padding: 0.5em 0.7em 0;
+  border-radius: 0.6em;
+  background: #090c0a;
+  box-shadow: inset 0 0.15em 0.5em #000;
+}
+
+.sinal__barra {
+  flex: 1;
+  border-radius: 0.2em 0.2em 0 0;
+  background: #17201a;
+  box-shadow: inset 0 0 0 0.08em #2b3a30;
+  transition: background 0.15s;
+}
+
+.sinal__barra[data-aceso='true'] {
+  background: var(--lcd);
+  box-shadow: 0 0 0.7em var(--lcd-brilho);
+}
+
+.sinal .rotulo {
+  display: block;
+  margin-top: 0.5em;
+}
+
+.sintonia {
+  display: grid;
+  justify-items: center;
+  gap: 0.2em;
+}
+
+.sintonia__botao {
+  width: 6.6em;
+  height: 6.6em;
+}
+
+.sintonia__marca {
+  stroke: #7f8d82;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+}
+
+.sintonia__rotor {
+  transition: transform 0.1s linear;
+}
+
+.sintonia__serrilha {
+  fill: #2f3932;
+  stroke: #0c100d;
+  stroke-width: 3;
+  stroke-dasharray: 2.4 2.6;
+}
+
+.sintonia__topo {
+  fill: #3d4840;
+  stroke: #0c100d;
+  stroke-width: 1.5;
+}
+
+.sintonia__brilho {
+  fill: #4c5950;
+  stroke: #667568;
+  stroke-width: 1;
+}
+
+.sintonia__ponteiro {
+  fill: #ffb224;
+}
+
+/* ---- espectro e alto-falante ------------------------------------------------- */
+.radio__espectro {
+  height: 3.4em;
+  padding: 0.5em 0.7em;
+  border-radius: 0.6em;
+  background: #090c0a;
+  box-shadow: inset 0 0.15em 0.5em #000;
+}
+
+.espectro {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.espectro rect {
+  fill: var(--lcd);
+}
+
+.radio[data-estado='desligado'] .espectro rect {
+  fill: #1d2a21;
+}
+
+.grade {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 5.4em;
+  fill: #070a08;
+  filter: drop-shadow(0 0.06em 0 rgba(255, 255, 255, 0.14));
+}
+
+/* ---- radar do visor (a partir do T11) ----------------------------------------- */
+.radar {
+  flex: none;
+  width: 5.8em;
+  height: 5.8em;
+  color: var(--lcd);
+}
+
+.radar__anel,
+.radar__linha {
+  fill: none;
+  stroke: var(--lcd);
+  stroke-width: 1;
+  opacity: 0.5;
+}
+
+.radar__rio {
+  fill: none;
+  stroke: var(--lcd);
+  stroke-width: 2.2;
+  stroke-dasharray: 5 4;
+  opacity: 0.55;
+}
+
+.radar__varredura {
+  transform-origin: 50px 50px;
+  animation: radar-varre 3.6s linear infinite;
+}
+
+.radar__alvo {
+  fill: var(--lcd);
+  filter: drop-shadow(0 0 3px var(--lcd));
+  animation: radar-alvo 28s linear infinite;
+}
+
+/* ---- animações ------------------------------------------------------------------ */
+@keyframes pisca {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}
+
+@keyframes tremula {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  12% {
+    opacity: 0.35;
+  }
+  24% {
+    opacity: 1;
+  }
+  47% {
+    opacity: 0.55;
+  }
+  60% {
+    opacity: 1;
+  }
+  83% {
+    opacity: 0.3;
+  }
+}
+
+@keyframes lcd-tremor {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  41% {
+    opacity: 0.88;
+  }
+  44% {
+    opacity: 1;
+  }
+  78% {
+    opacity: 0.92;
+  }
+}
+
+@keyframes visor-entra {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@keyframes antena-balanca {
+  0%,
+  100% {
+    transform: rotate(-1.6deg);
+  }
+  50% {
+    transform: rotate(1.8deg);
+  }
+}
+
+@keyframes radar-varre {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes radar-alvo {
+  0% {
+    transform: translate(-24px, 22px);
+    opacity: 0;
+  }
+  4% {
+    opacity: 1;
+  }
+  25% {
+    transform: translate(-13px, 15px);
+  }
+  45% {
+    transform: translate(-5px, 8px);
+  }
+  62% {
+    transform: translate(4px, 1px);
+  }
+  80% {
+    transform: translate(13px, -9px);
+  }
+  96% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(22px, -19px);
+    opacity: 0;
+  }
+}
+
+/* ---- telas estreitas: rádio compacto ---------------------------------------------- */
+@media (max-width: 899px) {
+  .radio {
+    padding-top: 3.4em;
+  }
+
+  .radio__antena {
+    right: 6.5em;
+    width: 0.8em;
+    height: 4.4em;
+  }
+
+  .radio__corpo {
+    gap: 0.8em;
+    padding: 1.1em 1.4em 1em;
+    border-radius: 1.6em;
+  }
+
+  .parafuso,
+  .grade,
+  .radio__marca {
+    display: none;
+  }
+
+  .visor__tela {
+    min-height: 8em;
+  }
+
+  .visor__corpo {
+    min-height: 4.2em;
+  }
+
+  .radio__espectro {
+    height: 2.6em;
+  }
+
+  .sinal__barras {
+    height: 3em;
+  }
+
+  .sintonia__botao {
+    width: 4.6em;
+    height: 4.6em;
+  }
+}
+
+/* telas médias (tablet em pé): visor ao lado dos controles */
+@media (min-width: 560px) and (max-width: 899px) {
+  .radio {
+    font-size: clamp(9.5px, 2.2cqw, 15px);
+  }
+
+  .radio__corpo {
+    grid-template-columns: 1.75fr 1fr;
+    grid-template-areas:
+      'visor topo'
+      'visor meio'
+      'espectro espectro';
+    column-gap: 1.4em;
+  }
+
+  .radio__topo {
+    grid-area: topo;
+    justify-content: space-between;
+  }
+
+  .leds {
+    margin-left: 0;
+  }
+
+  .visor {
+    grid-area: visor;
+  }
+
+  .radio__meio {
+    grid-area: meio;
+  }
+
+  .radio__espectro {
+    grid-area: espectro;
+  }
+}
+
+@media (max-width: 559px) {
+  .radio {
+    font-size: clamp(10px, 2.9cqw, 14px);
+    padding-top: 3em;
+  }
+
+  .radio__antena {
+    right: 9em;
+    height: 4em;
+  }
+
+  .radio__corpo {
+    gap: 0.65em;
+    padding: 0.9em 1.1em 0.85em;
+  }
+
+  .radio__meio {
+    gap: 1em;
+  }
+
+  .visor {
+    padding: 0.4em;
+  }
+
+  .visor__tela {
+    min-height: 6.4em;
+    padding: 0.6em 0.9em 0.7em;
+  }
+
+  .visor__topo {
+    font-size: 1.15em;
+  }
+
+  .visor__corpo {
+    min-height: 3.2em;
+    margin-top: 0.4em;
+  }
+
+  .visor__mensagem {
+    font-size: 1.5em;
+  }
+
+  .radar {
+    width: 4.6em;
+    height: 4.6em;
+  }
+
+  .radio__espectro {
+    height: 2.1em;
+    padding: 0.35em 0.6em;
+  }
+
+  .sinal__barras {
+    height: 2.5em;
+  }
+
+  .sintonia__botao {
+    width: 3.8em;
+    height: 3.8em;
+  }
+}
+
+/* ---- movimento reduzido: tudo parado, o estado continua legível ------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .radio__antena,
+  .radar__varredura,
+  .radar__alvo,
+  .led__luz,
+  .visor__tela,
+  .visor__mensagem {
+    animation: none !important;
+  }
+
+  .radar__alvo {
+    transform: translate(-5px, 8px);
+  }
+}

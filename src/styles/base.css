@@ -1,0 +1,311 @@
+/* Tokens, layout geral e componentes comuns. Fontes do sistema: nada é baixado da rede. */
+:root {
+  color-scheme: dark;
+  --bg: #080c0a;
+  --bg-2: #0d1310;
+  --linha: #26342c;
+  --texto: #e3ebe0;
+  --suave: #a9b7a7;
+  --ambar: #ffb224;
+  --verde: #62ff93;
+  --vermelho: #ff5c4a;
+  --azul: #8fd0ff;
+  --foco: #8fd0ff;
+  --botao-bg: #17211c;
+  --botao-borda: #3d5045;
+  --botao-hover: #223229;
+  --fonte-ui: 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
+  --fonte-mono: 'Cascadia Mono', Consolas, 'SF Mono', 'Courier New', monospace;
+}
+
+:root[data-contraste='alto'] {
+  --bg: #000;
+  --bg-2: #000;
+  --linha: #fff;
+  --texto: #fff;
+  --suave: #ececec;
+  --ambar: #ffe600;
+  --verde: #3dff7a;
+  --azul: #7fe3ff;
+  --foco: #00e5ff;
+  --botao-bg: #000;
+  --botao-borda: #fff;
+  --botao-hover: #262626;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--texto);
+  font-family: var(--fonte-ui);
+  line-height: 1.4;
+  -webkit-font-smoothing: antialiased;
+}
+
+:focus-visible {
+  outline: 3px solid var(--foco);
+  outline-offset: 2px;
+}
+
+kbd {
+  font: 700 0.8rem var(--fonte-mono);
+  padding: 0.1rem 0.4rem;
+  border: 1px solid #55695c;
+  border-bottom-width: 2px;
+  border-radius: 0.3rem;
+  background: #17211b;
+  color: var(--texto);
+}
+
+.so-leitor {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---- layout: rádio à esquerda, texto à direita --------------------------- */
+.app {
+  display: grid;
+  grid-template-columns: 55fr 45fr;
+  height: 100dvh;
+  overflow: hidden;
+}
+
+.painel-radio {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.1rem;
+  min-height: 0;
+  padding: 1.25rem;
+  overflow-y: auto;
+  background:
+    radial-gradient(ellipse at 50% 30%, rgba(60, 90, 70, 0.22), transparent 62%),
+    linear-gradient(180deg, #0b100d, #070a08);
+}
+
+@media (max-width: 899px) {
+  .app {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto minmax(0, 1fr);
+  }
+
+  .painel-radio {
+    gap: 0.6rem;
+    max-height: 52dvh;
+    padding: 0.6rem 0.75rem;
+    border-bottom: 1px solid var(--linha);
+  }
+}
+
+/* ---- botões --------------------------------------------------------------- */
+.botao {
+  min-height: 2.6rem;
+  padding: 0.4rem 0.95rem;
+  border: 1.5px solid var(--botao-borda);
+  border-radius: 0.55rem;
+  background: var(--botao-bg);
+  color: var(--texto);
+  font: 600 0.95rem var(--fonte-ui);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.botao:hover:not(:disabled) {
+  background: var(--botao-hover);
+}
+
+.botao:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.botao[aria-pressed='true'],
+.botao[aria-expanded='true'] {
+  border-color: var(--verde);
+  background: #173a26;
+}
+
+:root[data-contraste='alto'] .botao[aria-pressed='true'],
+:root[data-contraste='alto'] .botao[aria-expanded='true'] {
+  background: #003d17;
+}
+
+.botao--forte {
+  border-color: var(--ambar);
+  background: var(--ambar);
+  color: #1b1200;
+}
+
+.botao--forte:hover:not(:disabled) {
+  background: #ffc54f;
+}
+
+.botao--grande {
+  min-height: 3rem;
+  padding: 0.55rem 1.3rem;
+  font-size: 1.05rem;
+}
+
+.botao--curto {
+  min-width: 3rem;
+  padding-inline: 0.5rem;
+}
+
+.botao--discreto {
+  min-height: 2.2rem;
+  border-style: dashed;
+  color: var(--suave);
+  font-weight: 500;
+  font-size: 0.85rem;
+}
+
+/* ---- controles abaixo do rádio -------------------------------------------- */
+.controles {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  width: min(100%, 38rem);
+}
+
+.controles__botoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.controles__botoes .botao {
+  flex: 1 1 10rem;
+}
+
+.interruptor {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  width: 100%;
+  padding: 0.55rem 0.9rem;
+  border: 2px solid var(--botao-borda);
+  border-radius: 0.7rem;
+  background: var(--botao-bg);
+  color: var(--texto);
+  font: 700 1rem var(--fonte-ui);
+  text-align: left;
+  cursor: pointer;
+}
+
+.interruptor:hover {
+  background: var(--botao-hover);
+}
+
+.interruptor[aria-checked='true'] {
+  border-color: var(--verde);
+}
+
+.interruptor__trilho {
+  position: relative;
+  flex: none;
+  width: 3.1rem;
+  height: 1.65rem;
+  border-radius: 999px;
+  background: #313d36;
+  box-shadow: inset 0 0 0 2px #55695c;
+  transition: background 0.2s;
+}
+
+.interruptor__bola {
+  position: absolute;
+  top: 0.22rem;
+  left: 0.25rem;
+  width: 1.2rem;
+  height: 1.2rem;
+  border-radius: 50%;
+  background: #dfe8dc;
+  transition: transform 0.2s;
+}
+
+.interruptor[aria-checked='true'] .interruptor__trilho {
+  background: #1f8a4a;
+}
+
+.interruptor[aria-checked='true'] .interruptor__bola {
+  transform: translateX(1.4rem);
+}
+
+.interruptor__nome {
+  flex: 1;
+}
+
+.interruptor__estado {
+  font: 700 0.8rem var(--fonte-mono);
+  letter-spacing: 0.1em;
+  color: var(--suave);
+}
+
+.interruptor[aria-checked='true'] .interruptor__estado {
+  color: var(--verde);
+}
+
+.som__aviso {
+  margin: 0.55rem 0 0;
+  padding: 0.1rem 0 0.1rem 0.7rem;
+  border-left: 3px solid var(--ambar);
+  color: #ffd27a;
+  font-size: 0.92rem;
+}
+
+.som__erro {
+  margin: 0.4rem 0 0;
+  color: #ffb3aa;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 899px) {
+  .controles {
+    gap: 0.5rem;
+  }
+
+  .controles__botoes .botao {
+    min-height: 2.6rem;
+    padding-block: 0.35rem;
+    font-size: 0.98rem;
+  }
+
+  .interruptor {
+    padding-block: 0.4rem;
+  }
+
+  .som__aviso {
+    margin-top: 0.35rem;
+    font-size: 0.82rem;
+    line-height: 1.3;
+  }
+}
+
+/* ---- menos movimento ------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
