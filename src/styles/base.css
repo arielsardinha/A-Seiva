@@ -262,8 +262,21 @@ kbd {
   color: var(--verde);
 }
 
+.som {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.som__status {
+  margin: 0;
+  padding: 0 0.2rem;
+  color: var(--suave);
+  font-size: 0.92rem;
+}
+
 .som__aviso {
-  margin: 0.55rem 0 0;
+  margin: 0.15rem 0 0;
   padding: 0.1rem 0 0.1rem 0.7rem;
   border-left: 3px solid var(--ambar);
   color: #ffd27a;
@@ -276,7 +289,8 @@ kbd {
   font-size: 0.9rem;
 }
 
-@media (max-width: 899px) {
+/* controles compactos: telas estreitas e janelas baixas (cabe tudo sem rolar) */
+@media (max-width: 899px), (max-height: 820px) {
   .controles {
     gap: 0.5rem;
   }
@@ -287,14 +301,53 @@ kbd {
     font-size: 0.98rem;
   }
 
+  /* dois interruptores lado a lado; o estado fica no próprio trilho (e em aria-checked) */
+  .som {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.3rem 0.5rem;
+  }
+
+  .som > p {
+    grid-column: 1 / -1;
+  }
+
   .interruptor {
-    padding-block: 0.4rem;
+    gap: 0.5rem;
+    padding: 0.3rem 0.55rem;
+    font-size: 0.88rem;
+    line-height: 1.15;
+  }
+
+  .interruptor__trilho {
+    width: 2.5rem;
+    height: 1.4rem;
+  }
+
+  .interruptor__bola {
+    top: 0.2rem;
+    left: 0.2rem;
+    width: 1rem;
+    height: 1rem;
+  }
+
+  .interruptor[aria-checked='true'] .interruptor__bola {
+    transform: translateX(1.1rem);
+  }
+
+  .interruptor__estado {
+    display: none;
+  }
+
+  .som__status {
+    font-size: 0.82rem;
+    line-height: 1.25;
   }
 
   .som__aviso {
-    margin-top: 0.35rem;
-    font-size: 0.82rem;
-    line-height: 1.3;
+    margin-top: 0;
+    font-size: 0.8rem;
+    line-height: 1.25;
   }
 }
 

@@ -4,14 +4,49 @@ interface ControlesRadioProps {
   energia: Energia
   podeConectar: boolean
   sons: boolean
+  escuta: boolean
+  /** Frase sobre o que está tocando em "O que a Dra. Lis ouve". */
+  statusEscuta: string
   erroSom: string | null
   onPower: () => void
   onConectar: () => void
   onSons: () => void
+  onEscuta: () => void
 }
 
-/** Botões fora do aparelho: ligar, conectar o canal e o interruptor de som (mudo por padrão). */
-export function ControlesRadio({ energia, podeConectar, sons, erroSom, onPower, onConectar, onSons }: ControlesRadioProps) {
+interface InterruptorProps {
+  nome: string
+  ligado: boolean
+  rotuloLigado: string
+  rotuloDesligado: string
+  onClick: () => void
+}
+
+function Interruptor({ nome, ligado, rotuloLigado, rotuloDesligado, onClick }: InterruptorProps) {
+  return (
+    <button type="button" role="switch" aria-checked={ligado} className="interruptor" onClick={onClick}>
+      <span className="interruptor__trilho" aria-hidden="true">
+        <span className="interruptor__bola" />
+      </span>
+      <span className="interruptor__nome">{nome}</span>
+      <span className="interruptor__estado">{ligado ? rotuloLigado : rotuloDesligado}</span>
+    </button>
+  )
+}
+
+/** Botões fora do aparelho: ligar, conectar o canal e os interruptores de som (mudos por padrão). */
+export function ControlesRadio({
+  energia,
+  podeConectar,
+  sons,
+  escuta,
+  statusEscuta,
+  erroSom,
+  onPower,
+  onConectar,
+  onSons,
+  onEscuta,
+}: ControlesRadioProps) {
   return (
     <div className="controles">
       <div className="controles__botoes">
@@ -30,13 +65,17 @@ export function ControlesRadio({ energia, podeConectar, sons, erroSom, onPower, 
       </div>
 
       <div className="som">
-        <button type="button" role="switch" aria-checked={sons} className="interruptor" onClick={onSons}>
-          <span className="interruptor__trilho" aria-hidden="true">
-            <span className="interruptor__bola" />
-          </span>
-          <span className="interruptor__nome">Sons do rádio</span>
-          <span className="interruptor__estado">{sons ? 'LIGADO' : 'MUDO'}</span>
-        </button>
+        <Interruptor nome="Sons do rádio" ligado={sons} rotuloLigado="LIGADO" rotuloDesligado="MUDO" onClick={onSons} />
+        <Interruptor
+          nome="O que a Dra. Lis ouve"
+          ligado={escuta}
+          rotuloLigado="LIGADO"
+          rotuloDesligado="DESLIGADO"
+          onClick={onEscuta}
+        />
+        <p className="som__status" role="status" aria-live="polite">
+          {statusEscuta}
+        </p>
         <p className="som__aviso">Use fones: o som do app pode vazar para o microfone e sujar a gravação.</p>
         {erroSom ? (
           <p className="som__erro" role="alert">

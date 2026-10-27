@@ -11,6 +11,21 @@
 
 export type EstadoRadioTake = 'buscando' | 'conectado' | 'alerta' | 'fim'
 
+/** Sons que a Dra. Lis ouve pelo rádio depois que o canal conecta (botão "O que a Dra. Lis ouve"). */
+export type CamadaEscuta = 'passos' | 'drone' | 'fogo' | 'floresta' | 'sonar' | 'rio' | 'pulso' | 'batida'
+
+/** Como cada camada aparece na tela ("Ouvindo agora: …"). */
+export const NOMES_ESCUTA: Record<CamadaEscuta, string> = {
+  passos: 'passos do corredor',
+  drone: 'drone grave',
+  fogo: 'fogo distante',
+  floresta: 'floresta',
+  sonar: 'ping de sonar',
+  rio: 'rio ao longe',
+  pulso: 'pulso',
+  batida: 'batida de corrida',
+}
+
 export interface Take {
   /** Identificador único. Os takes de fala usam T01, T02… */
   id: string
@@ -30,6 +45,13 @@ export interface Take {
   cuesAntes?: string[]
   /** Sons que o sound design coloca DEPOIS deste take. */
   cuesDepois?: string[]
+  /**
+   * O que a Dra. Lis ouve pelo rádio durante este take (só toca com o canal conectado e o botão
+   * "O que a Dra. Lis ouve" ligado). Se faltar, continua o do take anterior; `[]` silencia.
+   */
+  escuta?: CamadaEscuta[]
+  /** O que entra quando a transmissão é encerrada depois deste take (usado no último take). */
+  escutaFim?: CamadaEscuta[]
 }
 
 /** Título que aparece no topo do teleprompter. */
@@ -90,6 +112,8 @@ export const cena01: Take[] = [
     duracaoSeg: 9,
     radio: 'conectado',
     cuesDepois: ['entram os passos do corredor'],
+    // os passos entram já aqui para você ouvi-los em "Esses passos…"; mova para o T05 para seguir o cue à risca
+    escuta: ['passos'],
   },
   {
     id: 'T05',
@@ -121,6 +145,7 @@ export const cena01: Take[] = [
     duracaoSeg: 10,
     radio: 'alerta',
     cuesAntes: ['drone grave'],
+    escuta: ['passos', 'drone'],
   },
   {
     id: 'T08',
@@ -131,6 +156,7 @@ export const cena01: Take[] = [
     duracaoSeg: 8,
     radio: 'alerta',
     cuesAntes: ['fogo distante, bem baixo'],
+    escuta: ['passos', 'drone', 'fogo'],
   },
   {
     id: 'T09',
@@ -142,6 +168,7 @@ export const cena01: Take[] = [
     duracaoSeg: 8,
     radio: 'conectado',
     cuesAntes: ['floresta, ping de sonar discreto'],
+    escuta: ['passos', 'floresta', 'sonar'],
   },
   {
     id: 'T10',
@@ -172,6 +199,7 @@ export const cena01: Take[] = [
     duracaoSeg: 9,
     radio: 'conectado',
     cuesAntes: ['rio ao longe'],
+    escuta: ['passos', 'floresta', 'sonar', 'rio'],
   },
   {
     id: 'T13',
@@ -191,5 +219,6 @@ export const cena01: Take[] = [
     duracaoSeg: 2,
     radio: 'fim',
     cuesDepois: ['o pulso volta, entra a batida de corrida'],
+    escutaFim: ['pulso', 'batida'],
   },
 ]

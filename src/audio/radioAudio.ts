@@ -1,10 +1,14 @@
 /**
- * Som do rádio, 100% sintetizado com WebAudio (nenhum arquivo, nenhuma rede).
- * Fica mudo até o usuário ligar o interruptor "Sons do rádio" (um gesto, como o navegador exige).
+ * Som do app, 100% sintetizado com WebAudio (nenhum arquivo, nenhuma rede). Dois interruptores independentes:
+ *  - "Sons do rádio": chiado enquanto busca, bipes e cliques. O chiado some quando o canal conecta.
+ *  - "O que a Dra. Lis ouve": as camadas do roteiro (passos, floresta…), só com o canal conectado.
+ * Tudo fica mudo até o usuário ligar o interruptor (um gesto, como o navegador exige).
  * Os níveis são baixos de propósito: o app é usado com fones, ao lado de um microfone.
  */
+import type { CamadaEscuta } from '../data/cena01'
+import { Camadas } from './camadas'
 
-export type EstadoSom = 'desligado' | 'buscando' | 'conectado' | 'alerta'
+export type EstadoSom = 'desligado' | 'iniciando' | 'buscando' | 'conectado' | 'alerta'
 
 interface PerfilChiado {
   ganho: number
@@ -12,13 +16,17 @@ interface PerfilChiado {
   oscilacao: number
   centro: number
   q: number
+  /** Constante de tempo (s) com que o chiado chega a este nível; pequena = corta de uma vez */
+  transicao: number
 }
 
+// Conectado e alerta: canal fechado, sem chiado nenhum.
 const PERFIS: Record<EstadoSom, PerfilChiado> = {
-  desligado: { ganho: 0, oscilacao: 0, centro: 2500, q: 0.5 },
-  buscando: { ganho: 0.14, oscilacao: 0.7, centro: 2600, q: 0.8 },
-  conectado: { ganho: 0.05, oscilacao: 0.25, centro: 3200, q: 0.4 },
-  alerta: { ganho: 0.18, oscilacao: 0.9, centro: 1900, q: 0.3 },
+  desligado: { ganho: 0, oscilacao: 0, centro: 2500, q: 0.5, transicao: 0.05 },
+  iniciando: { ganho: 0.06, oscilacao: 0.4, centro: 2200, q: 0.6, transicao: 0.15 },
+  buscando: { ganho: 0.14, oscilacao: 0.7, centro: 2600, q: 0.8, transicao: 0.15 },
+  conectado: { ganho: 0, oscilacao: 0, centro: 3200, q: 0.4, transicao: 0.04 },
+  alerta: { ganho: 0, oscilacao: 0, centro: 1900, q: 0.3, transicao: 0.04 },
 }
 
 class RadioAudio {
@@ -27,8 +35,11 @@ class RadioAudio {
   private chiadoGanho: GainNode | null = null
   private chiadoFiltro: BiquadFilterNode | null = null
   private ruido: AudioBuffer | null = null
-  private ativo = false
+  private camadas: Camadas | null = null
+  private radioAtivo = false
+  private escutaAtiva = false
   private estado: EstadoSom = 'desligado'
+  private desejadas: readonly CamadaEscuta[] = []
   private timerChiado: number | undefined
   private timerBusca: number | undefined
 
@@ -36,25 +47,38 @@ class RadioAudio {
     return typeof window !== 'undefined' && 'AudioContext' in window
   }
 
-  /** Liga o som. Precisa ser chamado dentro de um clique/tecla do usuário. */
+  /** Liga "Sons do rádio". Precisa ser chamado dentro de um clique/tecla do usuário. */
   async ativar(): Promise<boolean> {
-    if (!this.disponivel) return false
-    try {
-      if (!this.ctx) this.montar()
-      await this.ctx?.resume()
-    } catch {
-      return false
-    }
-    this.ativo = true
+    if (!(await this.garantirContexto())) return false
+    this.radioAtivo = true
     this.aplicarEstado()
     this.tique()
     return true
   }
 
   desativar() {
-    this.ativo = false
+    this.radioAtivo = false
     this.parar()
-    if (this.chiadoGanho && this.ctx) this.chiadoGanho.gain.setTargetAtTime(0, this.ctx.currentTime, 0.05)
+    this.silenciarChiado(0.05)
+  }
+
+  /** Liga "O que a Dra. Lis ouve". Também precisa de um gesto do usuário. */
+  async ativarEscuta(): Promise<boolean> {
+    if (!(await this.garantirContexto())) return false
+    this.escutaAtiva = true
+    this.camadas?.definir(this.desejadas)
+    return true
+  }
+
+  desativarEscuta() {
+    this.escutaAtiva = false
+    this.camadas?.definir([])
+  }
+
+  /** Quais camadas devem estar no ar agora (só tocam se o interruptor estiver ligado). */
+  setCamadas(ids: readonly CamadaEscuta[]) {
+    this.desejadas = ids
+    if (this.escutaAtiva) this.camadas?.definir(ids)
   }
 
   setEstado(estado: EstadoSom) {
@@ -91,6 +115,17 @@ class RadioAudio {
     this.tom(t + 0.24, 520, 0.08, 0.05, 'sine')
   }
 
+  private async garantirContexto(): Promise<boolean> {
+    if (!this.disponivel) return false
+    try {
+      if (!this.ctx) this.montar()
+      await this.ctx?.resume()
+    } catch {
+      return false
+    }
+    return true
+  }
+
   private montar() {
     const ctx = new AudioContext()
     const mestre = ctx.createGain()
@@ -112,15 +147,20 @@ class RadioAudio {
     fonte.connect(filtro).connect(ganho).connect(mestre)
     fonte.start()
 
+    const escuta = ctx.createGain()
+    escuta.gain.value = 0.8
+    escuta.connect(mestre)
+
     this.ctx = ctx
     this.mestre = mestre
     this.ruido = ruido
     this.chiadoFiltro = filtro
     this.chiadoGanho = ganho
+    this.camadas = new Camadas(ctx, escuta, ruido)
   }
 
   private agora(): number | null {
-    return this.ativo && this.ctx && this.ctx.state === 'running' ? this.ctx.currentTime : null
+    return this.radioAtivo && this.ctx && this.ctx.state === 'running' ? this.ctx.currentTime : null
   }
 
   private parar() {
@@ -130,15 +170,23 @@ class RadioAudio {
     this.timerBusca = undefined
   }
 
+  private silenciarChiado(transicao: number) {
+    if (!this.ctx || !this.chiadoGanho) return
+    const t = this.ctx.currentTime
+    this.chiadoGanho.gain.cancelScheduledValues(t)
+    this.chiadoGanho.gain.setTargetAtTime(0, t, transicao)
+  }
+
   private aplicarEstado() {
     this.parar()
-    if (!this.ativo || !this.ctx || !this.chiadoGanho || !this.chiadoFiltro) return
+    if (!this.radioAtivo || !this.ctx || !this.chiadoGanho || !this.chiadoFiltro) return
     const perfil = PERFIS[this.estado]
     const t = this.ctx.currentTime
     this.chiadoFiltro.Q.setTargetAtTime(perfil.q, t, 0.1)
     this.chiadoFiltro.frequency.setTargetAtTime(perfil.centro, t, 0.1)
-    this.chiadoGanho.gain.setTargetAtTime(perfil.ganho, t, 0.15)
-    if (this.estado === 'desligado') return
+    this.chiadoGanho.gain.cancelScheduledValues(t)
+    this.chiadoGanho.gain.setTargetAtTime(perfil.ganho, t, perfil.transicao)
+    if (perfil.ganho === 0) return
 
     // o chiado "respira": ganho e faixa mudam aos poucos
     this.timerChiado = window.setInterval(() => {

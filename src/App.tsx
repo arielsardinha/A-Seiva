@@ -3,12 +3,21 @@ import { ControlesRadio } from './components/ControlesRadio'
 import { Radio } from './components/Radio'
 import { ESCALA_MAX, ESCALA_MIN, Teleprompter } from './components/Teleprompter'
 import { radioAudio, type EstadoSom } from './audio/radioAudio'
-import { TAKE_INICIO_RADAR, cena01 } from './data/cena01'
+import { NOMES_ESCUTA, TAKE_INICIO_RADAR, cena01, type CamadaEscuta } from './data/cena01'
 import { gravarSalvo, lerSalvo, usePersistido } from './hooks/usePersistido'
 import type { Energia, EstadoRadio } from './hooks/useSimulacaoRadio'
+import { camadasDoTake } from './lib/escuta'
 
 const TEMPO_INICIANDO_MS = 1800
 const TEMPO_AVISO_MS = 4500
+
+function descreverEscuta(ligada: boolean, energia: Energia, conectado: boolean, camadas: CamadaEscuta[]): string {
+  if (!ligada) return 'Ligue para ouvir o que ela ouve pelo rádio depois que o canal conectar.'
+  if (energia === 'off') return 'Ligue o rádio para ouvir.'
+  if (!conectado) return 'Vai tocar assim que o canal conectar.'
+  if (camadas.length === 0) return 'Canal limpo: nada para ouvir neste take.'
+  return `Ouvindo agora: ${camadas.map((c) => NOMES_ESCUTA[c]).join(', ')}.`
+}
 
 export function App() {
   const falas = useMemo(() => cena01.filter((t) => t.tipo === 'fala'), [])
@@ -25,6 +34,7 @@ export function App() {
   const [aviso, setAviso] = useState(false)
   const [txEncerrado, setTxEncerrado] = useState(false)
   const [sons, setSons] = useState(false)
+  const [escuta, setEscuta] = useState(false)
   const [erroSom, setErroSom] = useState<string | null>(null)
   const [telaCheia, setTelaCheia] = useState(false)
 
@@ -43,9 +53,16 @@ export function App() {
 
   // ---- áudio acompanha o estado -------------------------------------------------
   useEffect(() => {
-    const som: EstadoSom = energia === 'off' ? 'desligado' : energia === 'boot' ? 'conectado' : estado
+    const som: EstadoSom = energia === 'off' ? 'desligado' : energia === 'boot' ? 'iniciando' : estado
     radioAudio.setEstado(som)
   }, [energia, estado])
+
+  // O que a Dra. Lis ouve só existe depois de sincronizar: rádio ligado e canal conectado.
+  const conectado = energia === 'on' && estado !== 'buscando'
+  const camadas = useMemo(() => camadasDoTake(falas, indice, txEncerrado), [falas, indice, txEncerrado])
+  useEffect(() => {
+    radioAudio.setCamadas(conectado ? camadas : [])
+  }, [conectado, camadas])
 
   useEffect(() => {
     document.documentElement.dataset.contraste = altoContraste ? 'alto' : 'normal'
@@ -158,13 +175,26 @@ export function App() {
     else setErroSom('Este navegador não liberou o áudio. Tente de novo ou use outro navegador.')
   }
 
+  const alternarEscuta = async () => {
+    setErroSom(null)
+    if (escuta) {
+      radioAudio.desativarEscuta()
+      setEscuta(false)
+      return
+    }
+    if (await radioAudio.ativarEscuta()) setEscuta(true)
+    else setErroSom('Este navegador não liberou o áudio. Tente de novo ou use outro navegador.')
+  }
+
   // ---- teclado (Espaço e → avançam; ← volta) ----------------------------------
-  const acoes = useRef({ proximo, anterior, marcarGravado, alternarTelaCheia, mudarEscala, atualId })
-  acoes.current = { proximo, anterior, marcarGravado, alternarTelaCheia, mudarEscala, atualId }
+  const acoes = useRef({ proximo, anterior, marcarGravado, alternarTelaCheia, alternarEscuta, mudarEscala, atualId })
+  acoes.current = { proximo, anterior, marcarGravado, alternarTelaCheia, alternarEscuta, mudarEscala, atualId }
 
   useEffect(() => {
+    // com o tutorial aberto (janela modal) ou escrevendo num campo, as teclas ficam com ele
     const digitando = (alvo: EventTarget | null) =>
-      alvo instanceof HTMLElement && Boolean(alvo.closest('input, textarea, select, [contenteditable="true"]'))
+      Boolean(document.querySelector('dialog[open]')) ||
+      (alvo instanceof HTMLElement && Boolean(alvo.closest('input, textarea, select, [contenteditable="true"]')))
 
     const aoApertar = (e: KeyboardEvent) => {
       if (e.ctrlKey || e.metaKey || e.altKey || digitando(e.target)) return
@@ -186,6 +216,10 @@ export function App() {
         case 'f':
         case 'F':
           if (!e.repeat) a.alternarTelaCheia()
+          break
+        case 'e':
+        case 'E':
+          if (!e.repeat) void a.alternarEscuta()
           break
         case '+':
         case '=':
@@ -217,10 +251,13 @@ export function App() {
           energia={energia}
           podeConectar={podeConectar}
           sons={sons}
+          escuta={escuta}
+          statusEscuta={descreverEscuta(escuta, energia, conectado, camadas)}
           erroSom={erroSom}
           onPower={alternarEnergia}
           onConectar={conectarCanal}
           onSons={alternarSons}
+          onEscuta={alternarEscuta}
         />
       </section>
 

@@ -3,6 +3,7 @@ import { TITULO_CENA, type Take } from '../data/cena01'
 import { useReducedMotion } from '../hooks/useReducedMotion'
 import { LegendaMarcas } from './LegendaMarcas'
 import { TextoMarcado } from './TextoMarcado'
+import { Tutorial } from './Tutorial'
 import { VOLUME_MAXIMO, VolumeAlvo } from './VolumeAlvo'
 
 export const ESCALA_MIN = 0.8
@@ -140,6 +141,7 @@ export function Teleprompter(props: TeleprompterProps) {
             Alto contraste
           </button>
           <LegendaMarcas />
+          <Tutorial />
         </div>
       </div>
 
