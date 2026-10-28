@@ -322,6 +322,5 @@ export const cena03: Take[] = [
       'a transmissão corta de uma vez: estática absoluta, 5 s',
       'a estática baixa e fica só o som dos passos e da respiração na floresta; a batida não volta',
     ],
-    escutaFim: ['passos', 'floresta'],
   },
 ]

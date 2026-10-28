@@ -11,20 +11,8 @@
 
 export type EstadoRadioTake = 'buscando' | 'conectado' | 'alerta' | 'fim'
 
-/** Sons que a Dra. Lis ouve pelo rádio depois que o canal conecta (botão "O que a Dra. Lis ouve"). */
+/** O que está em volta do corredor na mata. Só drone, fogo, sonar e rio têm imagem (veja VISTAS_ESCUTA). */
 export type CamadaEscuta = 'passos' | 'drone' | 'fogo' | 'floresta' | 'sonar' | 'rio' | 'pulso' | 'batida'
-
-/** Como cada camada aparece na tela ("Ouvindo agora: …"). */
-export const NOMES_ESCUTA: Record<CamadaEscuta, string> = {
-  passos: 'passos do corredor',
-  drone: 'drone grave',
-  fogo: 'fogo distante',
-  floresta: 'floresta',
-  sonar: 'ping de sonar',
-  rio: 'rio ao longe',
-  pulso: 'pulso',
-  batida: 'batida de corrida',
-}
 
 /**
  * Onde o corredor está e o que acontece em volta dele (a imagem do painel da esquerda).
@@ -84,15 +72,15 @@ export const VISTAS_ESCUTA: Partial<Record<CamadaEscuta, string>> = {
   rio: 'o rio aparece entre as árvores',
 }
 
-/** Quem fala no take. Só a Lis passa pelo RVC. */
+/** Quem fala no take. */
 export type Personagem = 'lis' | 'dito' | 'vigia' | 'leo'
 
-/** Nome e como gravar, mostrados no cabeçalho de cada take. */
-export const PERSONAGENS: Record<Personagem, { nome: string; gravacao: string }> = {
-  lis: { nome: 'Lis', gravacao: 'com RVC' },
-  dito: { nome: 'Dito', gravacao: 'voz natural, sem RVC' },
-  vigia: { nome: 'Vigia', gravacao: 'voz natural, sem RVC' },
-  leo: { nome: 'Leo', gravacao: 'com o RVC do Leo' },
+/** Nome mostrado no cabeçalho de cada take. */
+export const PERSONAGENS: Record<Personagem, { nome: string }> = {
+  lis: { nome: 'Lis' },
+  dito: { nome: 'Dito' },
+  vigia: { nome: 'Vigia' },
+  leo: { nome: 'Leo' },
 }
 
 export interface Take {
@@ -118,13 +106,8 @@ export interface Take {
   cuesAntes?: string[]
   /** Sons que o sound design coloca DEPOIS deste take. */
   cuesDepois?: string[]
-  /**
-   * O que a Dra. Lis ouve pelo rádio durante este take (só toca com o canal conectado e o botão
-   * "O que a Dra. Lis ouve" ligado). Se faltar, continua o do take anterior; `[]` silencia.
-   */
+  /** O que aparece em volta do corredor na mata. Se faltar, continua o do take anterior; `[]` limpa. */
   escuta?: CamadaEscuta[]
-  /** O que entra quando a transmissão é encerrada depois deste take (usado no último take). */
-  escutaFim?: CamadaEscuta[]
 }
 
 /** Título que aparece no topo do teleprompter. */
@@ -410,6 +393,5 @@ export const cena01: Take[] = [
     duracaoSeg: 2,
     radio: 'fim',
     cuesDepois: ['o pulso volta, entra a batida de corrida'],
-    escutaFim: ['pulso', 'batida'],
   },
 ]

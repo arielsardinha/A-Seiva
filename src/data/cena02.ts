@@ -451,6 +451,5 @@ export const cena02: Take[] = [
     duracaoSeg: 2,
     radio: 'fim',
     cuesDepois: ['o zumbido vai se afastando; a batida de corrida volta'],
-    escutaFim: ['pulso', 'batida'],
   },
 ]

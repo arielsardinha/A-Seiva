@@ -13,19 +13,6 @@
   border-left: 1px solid var(--linha);
 }
 
-:root[data-contraste='alto'] .tp {
-  --enfase: #ffe600;
-}
-
-:root[data-contraste='alto'] .texto__acao {
-  color: #d9d9d9;
-}
-
-:root[data-contraste='alto'] .sep--respiro {
-  color: #fff;
-  opacity: 1;
-}
-
 .tp__cab {
   display: flex;
   align-items: flex-start;
@@ -64,19 +51,6 @@
   margin: 0.15rem 0 0;
   color: var(--suave);
   font-size: 0.92rem;
-}
-
-.tp__aviso {
-  margin: 0;
-  padding: 0.35rem 0.75rem;
-  border: 2px solid var(--vermelho);
-  border-radius: 0.45rem;
-  background: repeating-linear-gradient(135deg, rgba(255, 92, 74, 0.2) 0 0.6rem, transparent 0.6rem 1.2rem);
-  color: #ffc2bb;
-  font-size: 0.82rem;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  white-space: nowrap;
 }
 
 .tp__progresso {
@@ -148,10 +122,6 @@
   box-shadow: 0 1rem 2.5rem rgba(0, 0, 0, 0.7);
 }
 
-:root[data-contraste='alto'] .legenda__painel {
-  background: #000;
-}
-
 .legenda__painel h2 {
   margin: 0 0 0.4rem;
   color: var(--ambar);
@@ -194,11 +164,6 @@
   background: rgba(0, 0, 0, 0.75);
 }
 
-:root[data-contraste='alto'] .tutorial {
-  border-color: #fff;
-  background: #000;
-}
-
 .tutorial__corpo {
   max-height: calc(100dvh - 1.5rem - 4px);
   padding: 0 1.4rem 1.4rem;
@@ -218,10 +183,6 @@
   border-bottom: 1px solid var(--linha);
   background: inherit;
   background-color: #0f1813;
-}
-
-:root[data-contraste='alto'] .tutorial__cab {
-  background-color: #000;
 }
 
 .tutorial h2 {
@@ -281,26 +242,19 @@
   margin: 0;
 }
 
-.tutorial__volumes {
-  display: grid;
-  gap: 0.35rem;
-}
-
 .tutorial .tutorial__ok {
   margin-left: 0;
 }
 
-.tutorial__aviso {
+/* amostra no estilo do visor do rádio */
+.tutorial__radio {
   display: inline-block;
-  padding: 0.35rem 0.75rem;
-  border: 2px solid var(--vermelho);
-  border-radius: 0.45rem;
-  background: repeating-linear-gradient(135deg, rgba(255, 92, 74, 0.2) 0 0.6rem, transparent 0.6rem 1.2rem);
-  color: #ffc2bb;
-  font-size: 0.82rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  padding: 0.3rem 0.6rem;
+  border-radius: 0.4rem;
+  background: #080b09;
+  color: var(--verde);
+  font: 700 0.85rem var(--fonte-mono);
+  letter-spacing: 0.08em;
 }
 
 .tutorial__exemplo {
@@ -409,11 +363,6 @@
     0 0.7rem 2.2rem rgba(0, 0, 0, 0.55);
 }
 
-:root[data-contraste='alto'] .take[data-status='atual'] {
-  border-width: 4px;
-  background: #000;
-}
-
 .take[data-status='proximo'] {
   --fator: 0.52;
 }
@@ -484,11 +433,6 @@
   color: var(--azul);
 }
 
-.take__quem small {
-  color: var(--suave);
-  font-weight: 400;
-}
-
 .take__duracao {
   color: var(--suave);
   font-variant-numeric: tabular-nums;
@@ -532,53 +476,6 @@
   font-size: calc(1.15rem * max(1, var(--escala) * 0.9));
 }
 
-/* ---- volume alvo ------------------------------------------------------------------- */
-.volume {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.45rem;
-  font-variant-numeric: tabular-nums;
-}
-
-.volume__rotulo {
-  color: var(--suave);
-  font: 700 0.75rem var(--fonte-mono);
-  letter-spacing: 0.12em;
-}
-
-.volume__regua {
-  display: inline-flex;
-  gap: 2px;
-}
-
-.volume__passo {
-  width: 0.55rem;
-  height: 1.05rem;
-  border: 1px solid #44574b;
-  border-radius: 2px;
-  background: #16201b;
-}
-
-.volume__passo[data-modo='cheio'] {
-  border-color: var(--verde);
-  background: var(--verde);
-}
-
-.volume__passo[data-modo='variavel'] {
-  border-color: var(--verde);
-  background: rgba(98, 255, 147, 0.32);
-}
-
-.volume__passo[data-proibido='true'] {
-  border-color: #8a3128;
-  background: repeating-linear-gradient(135deg, #5c1e18 0 3px, #2a0f0c 3px 6px);
-}
-
-.volume__valor {
-  min-width: 2.6rem;
-  font-weight: 800;
-}
-
 /* ---- sons do sound design e voz do sistema --------------------------------------------- */
 .cues {
   display: flex;
@@ -617,11 +514,6 @@
 
 .sistema[data-status='feito'] {
   opacity: 0.62;
-}
-
-:root[data-contraste='alto'] .sistema {
-  border-color: var(--azul);
-  background: #000;
 }
 
 .sistema__rotulo {
@@ -701,14 +593,6 @@
   .tp__situacao {
     margin: 0;
     font-size: 0.8rem;
-  }
-
-  .tp__aviso {
-    padding: 0.2rem 0.45rem;
-    font-size: 0.66rem;
-    line-height: 1.15;
-    white-space: normal;
-    text-align: center;
   }
 
   .tp__barra {

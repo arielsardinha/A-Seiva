@@ -73,14 +73,6 @@ export function LegendaMarcas() {
             </dt>
             <dd>marcar como gravado</dd>
             <dt>
-              <kbd>F</kbd>
-            </dt>
-            <dd>tela cheia</dd>
-            <dt>
-              <kbd>E</kbd>
-            </dt>
-            <dd>o que a Dra. Lis ouve</dd>
-            <dt>
               <kbd>+</kbd> <kbd>−</kbd>
             </dt>
             <dd>tamanho da letra</dd>

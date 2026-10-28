@@ -5,7 +5,6 @@ import { useReducedMotion } from '../hooks/useReducedMotion'
 import { LegendaMarcas } from './LegendaMarcas'
 import { TextoMarcado } from './TextoMarcado'
 import { Tutorial } from './Tutorial'
-import { VOLUME_MAXIMO, VolumeAlvo } from './VolumeAlvo'
 
 export const ESCALA_MIN = 0.8
 export const ESCALA_MAX = 1.8
@@ -19,8 +18,6 @@ interface TeleprompterProps {
   gravados: readonly string[]
   escala: number
   rolarSozinho: boolean
-  altoContraste: boolean
-  telaCheia: boolean
   /** Está no último take: "Próximo" vira "Encerrar TX". */
   noUltimo: boolean
   onAnterior: () => void
@@ -29,8 +26,6 @@ interface TeleprompterProps {
   onGravado: (id: string) => void
   onEscala: (delta: number) => void
   onRolarSozinho: () => void
-  onAltoContraste: () => void
-  onTelaCheia: () => void
   onZerar: () => void
   onCena: (id: string) => void
 }
@@ -49,7 +44,7 @@ function Cues({ lista }: { lista?: string[] }) {
 }
 
 export function Teleprompter(props: TeleprompterProps) {
-  const { takes, atualId, gravados, escala, rolarSozinho, altoContraste, telaCheia, noUltimo } = props
+  const { takes, atualId, gravados, escala, rolarSozinho, noUltimo } = props
   const reduzMovimento = useReducedMotion()
   const rolagem = useRef<HTMLDivElement>(null)
   const atualRef = useRef<HTMLElement>(null)
@@ -103,9 +98,6 @@ export function Teleprompter(props: TeleprompterProps) {
             Take {numeroAtual} de {falas.length} · {gravadosNaCena} gravado{gravadosNaCena === 1 ? '' : 's'}
           </p>
         </div>
-        <p className="tp__aviso">
-          <b>Volume nunca acima de {VOLUME_MAXIMO}</b>
-        </p>
       </header>
 
       <div className="tp__progresso" aria-hidden="true">
@@ -153,12 +145,6 @@ export function Teleprompter(props: TeleprompterProps) {
           </button>
         </div>
         <div className="grupo">
-          <button type="button" className="botao" aria-pressed={telaCheia} onClick={props.onTelaCheia}>
-            Tela cheia
-          </button>
-          <button type="button" className="botao" aria-pressed={altoContraste} onClick={props.onAltoContraste}>
-            Alto contraste
-          </button>
           <LegendaMarcas />
           <Tutorial />
         </div>
@@ -210,10 +196,9 @@ export function Teleprompter(props: TeleprompterProps) {
                   <header className="take__cab">
                     <span className="take__id">{take.id}</span>
                     <span className="take__quem" data-quem={quem}>
-                      {PERSONAGENS[quem].nome} <small>· {PERSONAGENS[quem].gravacao}</small>
+                      {PERSONAGENS[quem].nome}
                     </span>
                     <span className="take__duracao">~{take.duracaoSeg} s</span>
-                    <VolumeAlvo volume={take.volume} />
                     <button
                       type="button"
                       className="take__ok"
@@ -247,7 +232,7 @@ export function Teleprompter(props: TeleprompterProps) {
       </div>
 
       <footer className="tp__atalhos" aria-hidden="true">
-        <kbd>Espaço</kbd> / <kbd>→</kbd> próximo · <kbd>←</kbd> anterior · <kbd>G</kbd> gravado · <kbd>F</kbd> tela cheia
+        <kbd>Espaço</kbd> / <kbd>→</kbd> próximo · <kbd>←</kbd> anterior · <kbd>G</kbd> gravado
       </footer>
     </section>
   )

@@ -324,6 +324,5 @@ export const cena05: Take[] = [
       'o rádio desliga com um clique e um chiado breve',
       'só a água do rio e o motor silencioso do barco deslizando pela correnteza: fim do capítulo 1',
     ],
-    escutaFim: ['rio'],
   },
 ]

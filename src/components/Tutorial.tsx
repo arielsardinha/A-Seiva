@@ -1,6 +1,5 @@
 import { useId, useRef, type ReactNode } from 'react'
 import { TextoMarcado } from './TextoMarcado'
-import { VOLUME_MAXIMO, VolumeAlvo } from './VolumeAlvo'
 
 interface LinhaProps {
   amostra: ReactNode
@@ -58,20 +57,19 @@ export function Tutorial() {
             </p>
             <ul className="tutorial__lista">
               <Linha amostra={<TextoMarcado texto="Tá, tá, tá… / vai." />} titulo="/ Respiro curto">
-                Um fôlego rápido, uma micropausa. Respire ou hesite um instante e siga: a frase continua, não
-                corte o raciocínio.
+                Um fôlego rápido, uma micropausa. Respire ou hesite um instante e siga: a frase continua, não corte o
+                raciocínio.
               </Linha>
               <Linha amostra={<TextoMarcado texto="Conecta. // Conecta, por favor." />} titulo="// Pausa maior">
-                Pare de verdade antes de seguir. É o silêncio que faz o efeito (peso, dúvida, gancho). Fica mais
-                marcada na tela e dura mais que o respiro.
+                Pare de verdade antes de seguir. É o silêncio que faz o efeito (peso, dúvida, gancho). Fica mais marcada
+                na tela e dura mais que o respiro.
               </Linha>
               <Linha amostra={<TextoMarcado texto="Aqui é a **Lis**!" />} titulo="Palavra em negrito (amarela)">
-                Dê mais peso a esta palavra: mais intenção e firmeza. Ênfase não é volume: continue abaixo do
-                volume alvo do take.
+                Dê mais peso a esta palavra: mais intenção e firmeza. Ênfase não é gritar.
               </Linha>
               <Linha amostra={<TextoMarcado texto="*(respira)* Tá." />} titulo="(texto) em cinza e itálico">
-                Ação, não é falada. Não diga a palavra: faça a ação (por exemplo, respirar de verdade) e siga com
-                a fala.
+                Ação, não é falada. Não diga a palavra: faça a ação (por exemplo, respirar de verdade) e siga com a
+                fala.
               </Linha>
             </ul>
           </section>
@@ -112,29 +110,15 @@ export function Tutorial() {
               <Linha
                 amostra={
                   <span className="take__quem" data-quem="dito">
-                    Dito <small>· voz natural, sem RVC</small>
+                    Dito
                   </span>
                 }
                 titulo="Quem fala"
               >
-                O personagem do take e como gravar. A Lis passa pelo RVC; o Dito é a sua voz natural.
+                O personagem que fala no take.
               </Linha>
               <Linha amostra={<span className="take__duracao">~9 s</span>} titulo="Duração estimada">
                 Quanto a fala deve levar, só como referência. Não precisa ser exato.
-              </Linha>
-              <Linha
-                amostra={
-                  <div className="tutorial__volumes">
-                    <VolumeAlvo volume={5} />
-                    <VolumeAlvo volume={[3, 7]} />
-                    <VolumeAlvo volume={[5, 3]} />
-                  </div>
-                }
-                titulo="VOL: volume alvo, de 1 a 10"
-              >
-                Os quadrados verdes mostram até onde chegar. Com seta (<b>3 → 7</b>) comece no primeiro valor e
-                vá até o segundo durante o take; em <b>5 → 3</b> o volume cai. Os quadrados vermelhos listrados
-                são a zona proibida: <b>nunca acima de {VOLUME_MAXIMO}</b>.
               </Linha>
               <Linha
                 amostra={<p className="take__direcao">colada no microfone, ofegante, olhando por cima do ombro</p>}
@@ -162,8 +146,7 @@ export function Tutorial() {
                 }
                 titulo="Chip SOM: som do sound design"
               >
-                O que o sound design vai colocar nesse ponto. Não é falado: serve para você saber o que vai
-                acontecer. Para ouvir uma versão simples, ligue <b>O que a Dra. Lis ouve</b>.
+                O que o sound design vai colocar nesse ponto. Não é falado: serve para você saber o que vai acontecer.
               </Linha>
               <Linha
                 amostra={
@@ -175,11 +158,26 @@ export function Tutorial() {
               >
                 Linha que aparece no visor do rádio (“Canal seguro estabelecido”). Pule: <b>não se grava</b>.
               </Linha>
-              <Linha
-                amostra={<span className="tutorial__aviso">Volume nunca acima de {VOLUME_MAXIMO}</span>}
-                titulo="Aviso fixo no topo"
-              >
-                Vale para todos os takes. Se passar de {VOLUME_MAXIMO}, o som estoura e a gravação fica ruim.
+            </ul>
+          </section>
+
+          <section>
+            <h3>O rádio ao lado do texto</h3>
+            <p className="tutorial__intro">
+              O rádio não faz som e não tem botão: ele segue o take sozinho e serve de referência para o clima da cena.
+            </p>
+            <ul className="tutorial__lista">
+              <Linha amostra={<span className="tutorial__radio">SINAL</span>} titulo="Barras de sinal">
+                Poucas barras oscilando: o sinal está fraco ou caindo. Todas acesas: o canal está firme.
+              </Linha>
+              <Linha amostra={<span className="tutorial__radio">BUSCANDO CANAL…</span>} titulo="Mensagem do visor">
+                <b>Buscando canal</b>: ainda não tem ninguém do outro lado. <b>Canal seguro</b>: alguém está falando com
+                o corredor. <b>Alerta</b>: o sinal está instável, perigo por perto. <b>TX encerrado</b> e{' '}
+                <b>sinal perdido</b>: a conversa acabou ou caiu.
+              </Linha>
+              <Linha amostra={<span className="tutorial__radio">RX · TX · CANAL</span>} titulo="Luzes">
+                <b>TX</b> piscando: tentando falar. Aceso: a transmissão está no ar. <b>CANAL</b> verde é seguro, âmbar
+                é alerta.
               </Linha>
             </ul>
           </section>
@@ -187,8 +185,8 @@ export function Tutorial() {
           <section>
             <h3>Como o take aparece na lista</h3>
             <p className="tutorial__intro">
-              Letra <b>grande, com borda âmbar</b>: o take atual. Letra <b>pequena e esmaecida</b>: os que já
-              passaram. Letra <b>pequena</b>: os próximos. Clique em qualquer take para pular para ele.
+              Letra <b>grande, com borda âmbar</b>: o take atual. Letra <b>pequena e esmaecida</b>: os que já passaram.
+              Letra <b>pequena</b>: os próximos. Clique em qualquer take para pular para ele.
             </p>
           </section>
 

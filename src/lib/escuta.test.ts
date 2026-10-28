@@ -19,36 +19,35 @@ describe('camadasDoTake', () => {
     take('B', { escuta: ['passos'] }),
     take('C'),
     take('D', { escuta: ['passos', 'drone'] }),
-    take('E', { escuta: [], escutaFim: ['pulso'] }),
+    take('E', { escuta: [] }),
   ]
 
-  it('fica em silêncio antes de qualquer camada ser definida', () => {
-    expect(camadasDoTake(falas, 0, false)).toEqual([])
+  it('fica vazio antes de qualquer camada ser definida', () => {
+    expect(camadasDoTake(falas, 0)).toEqual([])
   })
 
   it('mantém a camada do take anterior quando o take não define nada', () => {
-    expect(camadasDoTake(falas, 2, false)).toEqual(['passos'])
+    expect(camadasDoTake(falas, 2)).toEqual(['passos'])
   })
 
   it('troca a lista quando o take define outra', () => {
-    expect(camadasDoTake(falas, 3, false)).toEqual(['passos', 'drone'])
+    expect(camadasDoTake(falas, 3)).toEqual(['passos', 'drone'])
   })
 
-  it('`escuta: []` silencia as camadas herdadas', () => {
-    expect(camadasDoTake(falas, 4, false)).toEqual([])
-  })
-
-  it('usa escutaFim quando a transmissão acabou', () => {
-    expect(camadasDoTake(falas, 4, true)).toEqual(['pulso'])
-    expect(camadasDoTake(falas, 3, true)).toEqual([])
+  it('`escuta: []` limpa as camadas herdadas', () => {
+    expect(camadasDoTake(falas, 4)).toEqual([])
   })
 })
 
 describe('escuta na cena 1', () => {
   const falasCena = cena01.filter((t) => t.tipo === 'fala')
-  const em = (id: string) => camadasDoTake(falasCena, falasCena.findIndex((t) => t.id === id), false)
+  const em = (id: string) =>
+    camadasDoTake(
+      falasCena,
+      falasCena.findIndex((t) => t.id === id),
+    )
 
-  it('não tem nada para ouvir no prólogo do Dito, enquanto o canal busca (T01 e T02) nem no T03', () => {
+  it('não tem nada em volta no prólogo do Dito, enquanto o canal busca (T01 e T02) nem no T03', () => {
     for (const fala of falasCena.filter((t) => t.quem === 'dito')) expect(em(fala.id), fala.id).toEqual([])
     expect(em('T01')).toEqual([])
     expect(em('T02')).toEqual([])
@@ -62,9 +61,5 @@ describe('escuta na cena 1', () => {
     expect(em('T09')).toEqual(expect.arrayContaining(['floresta', 'sonar']))
     expect(em('T09')).not.toContain('drone')
     expect(em('T12')).toContain('rio')
-  })
-
-  it('entra pulso e batida quando a TX termina no T14', () => {
-    expect(camadasDoTake(falasCena, falasCena.length - 1, true)).toEqual(['pulso', 'batida'])
   })
 })

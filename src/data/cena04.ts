@@ -364,6 +364,5 @@ export const cena04: Take[] = [
       'metralhadoras rasgam os troncos em volta do corredor',
       'a batida acelera para um sprint intenso; a cena 5 começa no meio dele',
     ],
-    escutaFim: ['batida', 'pulso'],
   },
 ]

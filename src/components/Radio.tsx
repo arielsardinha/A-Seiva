@@ -1,10 +1,10 @@
 import { useReducedMotion } from '../hooks/useReducedMotion'
-import { SINAL_MAX, useFrequencia, useSinal, type Energia, type EstadoRadio } from '../hooks/useSimulacaoRadio'
+import { SINAL_MAX, useFrequencia, useSinal, type EstadoRadio } from '../hooks/useSimulacaoRadio'
 import { Espectro } from './Espectro'
 import { Radar } from './Radar'
 
+/** O rádio fica sempre ligado: é só a referência do sinal e de quem está no canal. */
 interface RadioProps {
-  energia: Energia
   estado: EstadoRadio
   /** Mostra "CANAL SEGURO ESTABELECIDO" (os primeiros segundos depois de conectar). */
   aviso: boolean
@@ -16,7 +16,6 @@ interface RadioProps {
   frequencia: number
   /** Mini-radar do visor (a partir do T11). */
   radar: boolean
-  onPower: () => void
 }
 
 interface TextoVisor {
@@ -24,9 +23,7 @@ interface TextoVisor {
   etiqueta: string
 }
 
-function textoDoVisor({ energia, estado, aviso, txEncerrado, sinalPerdido }: RadioProps): TextoVisor | null {
-  if (energia === 'off') return null
-  if (energia === 'boot') return { linha: 'INICIANDO…', etiqueta: 'TESTE' }
+function textoDoVisor({ estado, aviso, txEncerrado, sinalPerdido }: RadioProps): TextoVisor {
   if (txEncerrado && sinalPerdido) return { linha: 'SINAL PERDIDO', etiqueta: 'MUDO' }
   if (txEncerrado) return { linha: 'TX ENCERRADO', etiqueta: 'FIM' }
   switch (estado) {
@@ -124,28 +121,31 @@ function AltoFalante() {
 }
 
 export function Radio(props: RadioProps) {
-  const { energia, estado, txEncerrado, sinalPerdido, frequencia, radar, onPower } = props
+  const { estado, txEncerrado, sinalPerdido, frequencia, radar } = props
   const reduzMovimento = useReducedMotion()
-  const freq = useFrequencia(energia, estado, reduzMovimento, frequencia)
-  const sinal = useSinal(energia, estado, reduzMovimento)
+  const freq = useFrequencia(estado, reduzMovimento, frequencia)
+  const sinal = useSinal(estado, reduzMovimento)
   const visor = textoDoVisor(props)
-  const ligado = energia !== 'off'
-  const operando = energia === 'on'
   // sinal perdido: o canal morre, só fica a estática
-  const caiu = operando && txEncerrado && sinalPerdido
+  const caiu = txEncerrado && sinalPerdido
   const nivel = caiu ? 0 : sinal
 
-  const modoRx: ModoLed = !operando || caiu ? 'apagado' : estado === 'buscando' ? 'tremula' : estado === 'alerta' ? 'tremula' : 'aceso'
-  const modoTx: ModoLed = !operando || txEncerrado ? 'apagado' : estado === 'buscando' ? 'pisca' : 'aceso'
+  const modoRx: ModoLed = caiu
+    ? 'apagado'
+    : estado === 'buscando'
+      ? 'tremula'
+      : estado === 'alerta'
+        ? 'tremula'
+        : 'aceso'
+  const modoTx: ModoLed = txEncerrado ? 'apagado' : estado === 'buscando' ? 'pisca' : 'aceso'
   const corCanal = estado === 'alerta' ? 'ambar' : 'verde'
-  const modoCanal: ModoLed = !operando || caiu || estado === 'buscando' ? 'apagado' : estado === 'alerta' ? 'pisca' : 'aceso'
+  const modoCanal: ModoLed = caiu || estado === 'buscando' ? 'apagado' : estado === 'alerta' ? 'pisca' : 'aceso'
 
-  const textoFreq = freq === null || caiu ? '---.-' : freq.toFixed(1).padStart(5, '0')
-  const estadoVisual = ligado ? estado : 'desligado'
+  const textoFreq = caiu ? '---.-' : freq.toFixed(1).padStart(5, '0')
 
   return (
     <div className="radio-wrap">
-      <div className="radio" data-estado={estadoVisual} data-energia={energia} data-fim={txEncerrado} data-caiu={caiu}>
+      <div className="radio" data-estado={estado} data-fim={txEncerrado} data-caiu={caiu}>
         <Antena />
         <div className="radio__corpo">
           <i className="parafuso parafuso--a" />
@@ -162,48 +162,30 @@ export function Radio(props: RadioProps) {
               <Led nome="TX" cor="vermelho" modo={modoTx} />
               <Led nome="CANAL" cor={corCanal} modo={modoCanal} />
             </div>
-            <button
-              type="button"
-              className="power"
-              onClick={onPower}
-              aria-pressed={ligado}
-              aria-label={ligado ? 'Desligar o rádio' : 'Ligar o rádio'}
-            >
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M12 3 V11.5" />
-                <path d="M7 6.2 A8 8 0 1 0 17 6.2" />
-              </svg>
-            </button>
           </div>
 
           <div className="visor" aria-hidden="true">
             <div className="visor__tela">
-              {visor ? (
-                <>
-                  <div className="visor__topo">
-                    <span className="visor__freq">FREQ {textoFreq}</span>
-                    <span className="visor__etiqueta">{visor.etiqueta}</span>
-                  </div>
-                  <div className="visor__corpo">
-                    <p className="visor__mensagem" key={visor.linha}>
-                      {visor.linha}
-                    </p>
-                    {radar && operando && !txEncerrado ? <Radar /> : null}
-                  </div>
-                </>
-              ) : (
-                <p className="visor__apagado">RÁDIO DESLIGADO</p>
-              )}
+              <div className="visor__topo">
+                <span className="visor__freq">FREQ {textoFreq}</span>
+                <span className="visor__etiqueta">{visor.etiqueta}</span>
+              </div>
+              <div className="visor__corpo">
+                <p className="visor__mensagem" key={visor.linha}>
+                  {visor.linha}
+                </p>
+                {radar && !txEncerrado ? <Radar /> : null}
+              </div>
             </div>
           </div>
 
           <div className="radio__meio">
             <MedidorSinal nivel={nivel} />
-            <Sintonia freq={freq ?? frequencia} />
+            <Sintonia freq={freq} />
           </div>
 
           <div className="radio__espectro">
-            <Espectro estado={!ligado ? 'desligado' : caiu ? 'buscando' : estado} reduzMovimento={reduzMovimento} />
+            <Espectro estado={caiu ? 'buscando' : estado} reduzMovimento={reduzMovimento} />
           </div>
 
           <AltoFalante />
@@ -211,7 +193,7 @@ export function Radio(props: RadioProps) {
       </div>
 
       <p className="so-leitor" role="status" aria-live="polite">
-        {visor ? `Rádio: ${visor.linha.replace('…', '').toLowerCase()}` : 'Rádio desligado'}
+        {`Rádio: ${visor.linha.replace('…', '').toLowerCase()}`}
       </p>
     </div>
   )

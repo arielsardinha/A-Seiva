@@ -6,7 +6,6 @@ const ALTURA = 40
 
 /** Energia média do espectro em cada estado do rádio. */
 const AMPLITUDE: Record<EstadoRadio, number> = {
-  desligado: 0,
   buscando: 0.5,
   conectado: 0.2,
   alerta: 0.85,
@@ -17,7 +16,7 @@ interface EspectroProps {
   reduzMovimento: boolean
 }
 
-/** Barra de ruído/espectro: agita mais ao buscar e no alerta, fica calma ao conectar, some ao desligar. */
+/** Barra de ruído/espectro: agita mais ao buscar e no alerta, fica calma ao conectar. */
 export function Espectro({ estado, reduzMovimento }: EspectroProps) {
   const barras = useRef<(SVGRectElement | null)[]>([])
 
@@ -66,12 +65,7 @@ export function Espectro({ estado, reduzMovimento }: EspectroProps) {
   }, [estado, reduzMovimento])
 
   return (
-    <svg
-      className="espectro"
-      viewBox={`0 0 ${BARRAS * 10} ${ALTURA}`}
-      preserveAspectRatio="none"
-      aria-hidden="true"
-    >
+    <svg className="espectro" viewBox={`0 0 ${BARRAS * 10} ${ALTURA}`} preserveAspectRatio="none" aria-hidden="true">
       {Array.from({ length: BARRAS }, (_, i) => (
         <rect
           key={i}

@@ -1,28 +1,18 @@
 import { useEffect, useRef, useState } from 'react'
 
-export type Energia = 'off' | 'boot' | 'on'
-export type EstadoRadio = 'desligado' | 'buscando' | 'conectado' | 'alerta'
+export type EstadoRadio = 'buscando' | 'conectado' | 'alerta'
 
 export const SINAL_MAX = 6
 const arredondar = (n: number) => Math.round(n * 10) / 10
 const entre = (n: number, min: number, max: number) => Math.min(max, Math.max(min, n))
 
-/**
- * Frequência mostrada no visor: varre a faixa enquanto busca e assenta na frequência do canal ao conectar.
- * `null` enquanto o rádio ainda não tem frequência para mostrar (desligado ou iniciando).
- */
-export function useFrequencia(
-  energia: Energia,
-  estado: EstadoRadio,
-  reduzMovimento: boolean,
-  alvo: number,
-): number | null {
+/** Frequência mostrada no visor: varre a faixa enquanto busca e assenta na frequência do canal ao conectar. */
+export function useFrequencia(estado: EstadoRadio, reduzMovimento: boolean, alvo: number): number {
   const [freq, setFreq] = useState(alvo)
   const atual = useRef(alvo)
   const fase = useRef(0)
 
   useEffect(() => {
-    if (energia !== 'on') return
     const passoMs = reduzMovimento ? 700 : 90
     const aplicar = (f: number) => {
       atual.current = f
@@ -50,13 +40,13 @@ export function useFrequencia(
       }
     }, 70)
     return () => window.clearInterval(id)
-  }, [energia, estado, reduzMovimento, alvo])
+  }, [estado, reduzMovimento, alvo])
 
-  return energia === 'on' ? freq : null
+  return freq
 }
 
 /** Nível do medidor de sinal (0 a SINAL_MAX): baixo e oscilando ao buscar, sobe degrau a degrau ao conectar. */
-export function useSinal(energia: Energia, estado: EstadoRadio, reduzMovimento: boolean): number {
+export function useSinal(estado: EstadoRadio, reduzMovimento: boolean): number {
   const [nivel, setNivel] = useState(0)
   const atual = useRef(0)
 
@@ -64,14 +54,6 @@ export function useSinal(energia: Energia, estado: EstadoRadio, reduzMovimento: 
     const aplicar = (n: number) => {
       atual.current = n
       setNivel(n)
-    }
-    if (energia === 'off') {
-      aplicar(0)
-      return
-    }
-    if (energia === 'boot') {
-      aplicar(0)
-      return
     }
 
     const passoMs = reduzMovimento ? 800 : 170
@@ -91,7 +73,7 @@ export function useSinal(energia: Energia, estado: EstadoRadio, reduzMovimento: 
       }
     }, passoMs)
     return () => window.clearInterval(id)
-  }, [energia, estado, reduzMovimento])
+  }, [estado, reduzMovimento])
 
   return nivel
 }
