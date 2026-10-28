@@ -48,7 +48,8 @@ describe('escuta na cena 1', () => {
   const falasCena = cena01.filter((t) => t.tipo === 'fala')
   const em = (id: string) => camadasDoTake(falasCena, falasCena.findIndex((t) => t.id === id), false)
 
-  it('não tem nada para ouvir enquanto o canal busca (T01 e T02) nem no T03', () => {
+  it('não tem nada para ouvir no prólogo do Dito, enquanto o canal busca (T01 e T02) nem no T03', () => {
+    for (const fala of falasCena.filter((t) => t.quem === 'dito')) expect(em(fala.id), fala.id).toEqual([])
     expect(em('T01')).toEqual([])
     expect(em('T02')).toEqual([])
     expect(em('T03')).toEqual([])

@@ -1,5 +1,6 @@
 import { Fragment, useLayoutEffect, useRef, type CSSProperties } from 'react'
-import { TITULO_CENA, type Take } from '../data/cena01'
+import { PERSONAGENS, type Take } from '../data/cena01'
+import type { Cena } from '../data/cenas'
 import { useReducedMotion } from '../hooks/useReducedMotion'
 import { LegendaMarcas } from './LegendaMarcas'
 import { TextoMarcado } from './TextoMarcado'
@@ -10,6 +11,9 @@ export const ESCALA_MIN = 0.8
 export const ESCALA_MAX = 1.8
 
 interface TeleprompterProps {
+  cenas: readonly Cena[]
+  cenaId: string
+  titulo: string
   takes: Take[]
   atualId: string
   gravados: readonly string[]
@@ -28,6 +32,7 @@ interface TeleprompterProps {
   onAltoContraste: () => void
   onTelaCheia: () => void
   onZerar: () => void
+  onCena: (id: string) => void
 }
 
 function Cues({ lista }: { lista?: string[] }) {
@@ -79,7 +84,21 @@ export function Teleprompter(props: TeleprompterProps) {
     <section className="tp" aria-label="Teleprompter" style={{ '--escala': escala } as CSSProperties}>
       <header className="tp__cab">
         <div>
-          <h1 className="tp__titulo">{TITULO_CENA}</h1>
+          <div className="tp__linha">
+            <h1 className="tp__titulo">{props.titulo}</h1>
+            <select
+              className="tp__cena"
+              aria-label="Escolher a cena"
+              value={props.cenaId}
+              onChange={(e) => props.onCena(e.target.value)}
+            >
+              {props.cenas.map((c, i) => (
+                <option key={c.id} value={c.id}>
+                  Cena {i + 1}
+                </option>
+              ))}
+            </select>
+          </div>
           <p className="tp__situacao" aria-live="polite">
             Take {numeroAtual} de {falas.length} · {gravadosNaCena} gravado{gravadosNaCena === 1 ? '' : 's'}
           </p>
@@ -168,6 +187,7 @@ export function Teleprompter(props: TeleprompterProps) {
 
             const atual = status === 'atual'
             const gravado = gravados.includes(take.id)
+            const quem = take.quem ?? 'lis'
             return (
               <Fragment key={take.id}>
                 <Cues lista={take.cuesAntes} />
@@ -189,6 +209,9 @@ export function Teleprompter(props: TeleprompterProps) {
                   )}
                   <header className="take__cab">
                     <span className="take__id">{take.id}</span>
+                    <span className="take__quem" data-quem={quem}>
+                      {PERSONAGENS[quem].nome} <small>· {PERSONAGENS[quem].gravacao}</small>
+                    </span>
                     <span className="take__duracao">~{take.duracaoSeg} s</span>
                     <VolumeAlvo volume={take.volume} />
                     <button
@@ -214,7 +237,7 @@ export function Teleprompter(props: TeleprompterProps) {
               type="button"
               className="botao botao--discreto"
               onClick={() => {
-                if (window.confirm('Zerar as marcas de gravado e voltar ao T01?')) props.onZerar()
+                if (window.confirm('Zerar as marcas de gravado e voltar ao início?')) props.onZerar()
               }}
             >
               Zerar marcas e voltar ao início

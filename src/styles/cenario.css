@@ -1,0 +1,825 @@
+/* Onde o corredor está: a imagem atrás do rádio (components/Cenario.tsx). */
+
+.painel-radio {
+  position: relative;
+  isolation: isolate;
+}
+
+.cenario {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  background: #030605;
+}
+
+.cenario svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* legenda: onde você está e o que está acontecendo */
+.cenario__legenda {
+  align-self: stretch;
+  max-width: 32rem;
+  margin-bottom: auto;
+  padding: 0.6rem 0.9rem;
+  border-left: 3px solid var(--ambar);
+  border-radius: 0.4rem;
+  background: rgba(3, 6, 5, 0.74);
+  backdrop-filter: blur(4px);
+}
+
+.cenario__legenda p {
+  margin: 0;
+}
+
+.cenario__lugar {
+  color: var(--ambar);
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.cenario__agora {
+  color: var(--texto);
+}
+
+.cenario__extras {
+  margin-top: 0.2rem !important;
+  color: var(--azul);
+  font-size: 0.92rem;
+}
+
+/* o rádio e os controles ficam por cima da imagem */
+.painel-radio .controles {
+  width: min(100%, 27rem);
+  padding: 0.75rem;
+  border: 1px solid var(--linha);
+  border-radius: 0.8rem;
+  background: rgba(5, 8, 6, 0.82);
+  backdrop-filter: blur(6px);
+}
+
+@media (min-width: 900px) {
+  /* no desktop o rádio fica no canto, como no pulso de quem corre, e a cena aparece em volta */
+  .painel-radio {
+    align-items: flex-end;
+    justify-content: flex-end;
+  }
+
+  .cenario__legenda {
+    align-self: flex-start;
+  }
+}
+
+/* ---- entrada de cada ambiente ------------------------------------------------- */
+.cen-entra {
+  animation: cen-entra 0.9s ease-out both;
+}
+
+@keyframes cen-entra {
+  from {
+    opacity: 0;
+  }
+}
+
+.cen-estrela {
+  fill: #e6eefc;
+  opacity: 0.75;
+}
+
+.cen-estrela--pisca {
+  animation: cen-pisca-estrela 3.6s ease-in-out infinite;
+}
+
+@keyframes cen-pisca-estrela {
+  50% {
+    opacity: 0.2;
+  }
+}
+
+/* ---- caminhonete ----------------------------------------------------------------- */
+.cenario[data-ambiente='estrada'] .cen-balanco {
+  animation: cen-estrada 1.3s ease-in-out infinite;
+}
+
+@keyframes cen-estrada {
+  25% {
+    transform: translateY(4px) rotate(0.15deg);
+  }
+  55% {
+    transform: translateY(-3px) rotate(-0.1deg);
+  }
+  80% {
+    transform: translateY(2px);
+  }
+}
+
+.cenario[data-ambiente='parada'] .cen-balanco,
+.cenario[data-ambiente='zumbido'] .cen-balanco,
+.cenario[data-ambiente='holofote'] .cen-balanco {
+  animation: cen-motor 0.16s linear infinite;
+}
+
+@keyframes cen-motor {
+  50% {
+    transform: translateY(1px);
+  }
+}
+
+.cen-balanco {
+  transform-origin: 800px 500px;
+}
+
+.cenario[data-ambiente='estrada'] .cen-sulcos path:nth-child(-n + 2) {
+  animation: cen-sulco-curto 0.32s linear infinite;
+}
+
+.cenario[data-ambiente='estrada'] .cen-sulcos path:nth-child(n + 3) {
+  animation: cen-sulco-longo 0.42s linear infinite;
+}
+
+@keyframes cen-sulco-curto {
+  to {
+    stroke-dashoffset: -56;
+  }
+}
+
+@keyframes cen-sulco-longo {
+  to {
+    stroke-dashoffset: -108;
+  }
+}
+
+.cen-terco {
+  transform-origin: 800px 168px;
+  animation: cen-terco 2.8s ease-in-out infinite;
+}
+
+.cenario:not([data-ambiente='estrada']) .cen-terco {
+  animation-duration: 4s;
+  animation-name: cen-terco-leve;
+}
+
+@keyframes cen-terco {
+  0%,
+  100% {
+    transform: rotate(-7deg);
+  }
+  50% {
+    transform: rotate(7deg);
+  }
+}
+
+@keyframes cen-terco-leve {
+  0%,
+  100% {
+    transform: rotate(-1.5deg);
+  }
+  50% {
+    transform: rotate(1.5deg);
+  }
+}
+
+.cen-am__texto {
+  fill: #ffb224;
+  font: 700 22px var(--fonte-mono);
+  letter-spacing: 2px;
+}
+
+.cenario[data-ambiente='zumbido'] .cen-am,
+.cenario[data-ambiente='zumbido'] .cen-am__texto,
+.cenario[data-ambiente='holofote'] .cen-am,
+.cenario[data-ambiente='holofote'] .cen-am__texto {
+  animation: cen-falha 0.9s steps(1) infinite;
+}
+
+@keyframes cen-falha {
+  0% {
+    opacity: 1;
+  }
+  12% {
+    opacity: 0.2;
+  }
+  20% {
+    opacity: 0.9;
+  }
+  47% {
+    opacity: 0.1;
+  }
+  55% {
+    opacity: 1;
+  }
+  78% {
+    opacity: 0.4;
+  }
+}
+
+/* o drone aparece longe no céu e vem chegando */
+.cen-drone-longe {
+  transform: translate(1180px, 270px);
+  animation: cen-drone-chega 10s ease-in-out both;
+}
+
+@keyframes cen-drone-chega {
+  from {
+    transform: translate(1180px, 270px);
+  }
+  to {
+    transform: translate(960px, 215px);
+  }
+}
+
+.cen-pisca-vermelho {
+  animation: cen-pisca 1.1s steps(1) infinite;
+}
+
+.cen-pisca-branco {
+  animation: cen-pisca 1.1s steps(1) 0.55s infinite;
+}
+
+@keyframes cen-pisca {
+  50% {
+    opacity: 0.15;
+  }
+}
+
+.cen-rotor {
+  animation: cen-rotor 0.09s linear infinite;
+}
+
+@keyframes cen-rotor {
+  50% {
+    opacity: 0.2;
+  }
+}
+
+/* holofote varrendo a estrada */
+.cen-facho {
+  transform-origin: 880px 200px;
+  animation: cen-varre 4.5s ease-in-out infinite alternate;
+}
+
+@keyframes cen-varre {
+  from {
+    transform: rotate(-24deg);
+  }
+  to {
+    transform: rotate(24deg);
+  }
+}
+
+.cen-clarao {
+  opacity: 0;
+  animation: cen-clarao 4.5s ease-in-out infinite alternate;
+}
+
+@keyframes cen-clarao {
+  50% {
+    opacity: 0.09;
+  }
+}
+
+/* ---- a caminhonete vai embora ------------------------------------------------------ */
+.cen-caminhonete {
+  transform-origin: 800px 880px;
+  animation: cen-vai-embora 8s cubic-bezier(0.5, 0, 0.8, 0.55) 0.6s both;
+}
+
+@keyframes cen-vai-embora {
+  to {
+    transform: translateY(-362px) scale(0.05);
+  }
+}
+
+.cen-poeira {
+  transform-origin: 800px 860px;
+  animation: cen-poeira 6s ease-out 0.8s both;
+}
+
+@keyframes cen-poeira {
+  0% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  25% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.8) translateY(-40px);
+  }
+}
+
+.cen-drone-segue {
+  transform: translate(1420px, 120px) scale(0.9);
+  animation: cen-drone-segue 9s ease-in 1.4s both;
+}
+
+@keyframes cen-drone-segue {
+  from {
+    transform: translate(1420px, 120px) scale(0.9);
+  }
+  to {
+    transform: translate(806px, 470px) scale(0.1);
+  }
+}
+
+/* ---- mata --------------------------------------------------------------------------- */
+.cenario[data-ambiente='mata'] .cen-balanco {
+  animation: cen-passada 0.37s ease-in-out infinite alternate;
+}
+
+@keyframes cen-passada {
+  from {
+    transform: translateY(-4px) rotate(-0.12deg);
+  }
+  to {
+    transform: translateY(5px) rotate(0.12deg);
+  }
+}
+
+.cenario[data-fim='true'] .cen-balanco {
+  animation-duration: 0.33s;
+}
+
+.cen-faixa {
+  animation: cen-rola linear infinite;
+}
+
+.cen-faixa--longe {
+  animation-duration: 70s;
+}
+
+.cen-faixa--meio {
+  animation-duration: 22s;
+}
+
+.cen-faixa--perto {
+  animation-duration: 6.5s;
+}
+
+@keyframes cen-rola {
+  to {
+    transform: translateX(-1600px);
+  }
+}
+
+.cen-fungo {
+  opacity: 0.2;
+  animation: cen-fungo 3.8s ease-in-out infinite;
+}
+
+@keyframes cen-fungo {
+  50% {
+    opacity: 0.75;
+  }
+}
+
+.cen-nevoa {
+  animation: cen-nevoa 16s ease-in-out infinite alternate;
+}
+
+@keyframes cen-nevoa {
+  to {
+    transform: translateX(160px);
+  }
+}
+
+.cen-raios {
+  animation: cen-raios 7s ease-in-out infinite alternate;
+}
+
+@keyframes cen-raios {
+  to {
+    opacity: 0.4;
+  }
+}
+
+.cen-fogo,
+.cen-rio,
+.cen-sonar,
+.cen-drone-copa {
+  animation: cen-entra 1.6s ease-out both;
+}
+
+.cen-fogo ellipse {
+  animation: cen-fogo 1.7s steps(6) infinite;
+}
+
+@keyframes cen-fogo {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  30% {
+    opacity: 0.65;
+  }
+  60% {
+    opacity: 0.9;
+  }
+  80% {
+    opacity: 0.55;
+  }
+}
+
+.cen-rio__brilho {
+  opacity: 0.15;
+  animation: cen-rio 2.2s ease-in-out infinite alternate;
+}
+
+@keyframes cen-rio {
+  to {
+    opacity: 0.85;
+  }
+}
+
+.cen-sonar__onda {
+  stroke-width: 3;
+  vector-effect: non-scaling-stroke;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: cen-sonar 3.2s ease-out infinite;
+}
+
+.cen-sonar__onda--2 {
+  animation-delay: 1.6s;
+}
+
+@keyframes cen-sonar {
+  from {
+    opacity: 0.7;
+    transform: scale(0.04);
+  }
+  to {
+    opacity: 0;
+    transform: scale(1);
+  }
+}
+
+.cen-facho--mata {
+  transform-origin: 600px 60px;
+  animation-duration: 5.5s;
+}
+
+.cen-alerta {
+  animation: cen-alerta 1.4s ease-in-out infinite alternate;
+}
+
+@keyframes cen-alerta {
+  from {
+    opacity: 0.35;
+  }
+}
+
+.cen-pulso {
+  animation: cen-pulso 1s ease-out infinite;
+}
+
+@keyframes cen-pulso {
+  0%,
+  40%,
+  100% {
+    opacity: 0.55;
+  }
+  12%,
+  52% {
+    opacity: 1;
+  }
+}
+
+/* ---- Setor 7 -------------------------------------------------------------------------- */
+
+/* câmera térmica: o ponto quente correndo em linha reta, com a mira atrás */
+.cen-hud {
+  fill: #e8e4ff;
+  font: 700 26px var(--fonte-mono);
+  letter-spacing: 2px;
+}
+
+.cen-hud--miudo {
+  font-size: 18px;
+}
+
+.cen-hud--rec {
+  fill: #ff4a3a;
+  animation: cen-pisca 1.2s steps(1) infinite;
+}
+
+.cen-alvo {
+  animation: cen-alvo 6s ease-in-out infinite alternate;
+}
+
+@keyframes cen-alvo {
+  from {
+    transform: translateX(-90px);
+  }
+  to {
+    transform: translateX(90px);
+  }
+}
+
+/* parado na beira da mata, olhando o pátio */
+.cenario[data-ambiente='cerca'] .cen-balanco {
+  animation: cen-respira 3.4s ease-in-out infinite;
+}
+
+@keyframes cen-respira {
+  50% {
+    transform: translateY(3px);
+  }
+}
+
+/* o holofote: uma ida e volta a cada 30 s, como a Lis conta */
+.cen-holofote {
+  animation: cen-holofote 15s ease-in-out infinite alternate;
+}
+
+@keyframes cen-holofote {
+  from {
+    transform: rotate(-78deg);
+  }
+  to {
+    transform: rotate(-24deg);
+  }
+}
+
+/* o tiro de corrida: passada rápida, o chão passando, o alvo crescendo na frente */
+.cenario[data-ambiente='patio'] .cen-balanco,
+.cenario[data-ambiente='portao'] .cen-balanco {
+  animation: cen-passada 0.28s ease-in-out infinite alternate;
+}
+
+.cen-rastros path {
+  animation: cen-sulco-longo 0.32s linear infinite;
+}
+
+.cen-aproxima {
+  animation: cen-aproxima 14s cubic-bezier(0.4, 0, 0.9, 0.6) both;
+}
+
+.cen-aproxima--portao {
+  animation-duration: 18s;
+}
+
+@keyframes cen-aproxima {
+  to {
+    transform: scale(1.45);
+  }
+}
+
+/* na sombra do galpão: respiração forte e a luz passando rente no chão */
+.cenario[data-ambiente='galpao'] .cen-balanco {
+  animation: cen-respira 1.1s ease-in-out infinite;
+}
+
+.cen-luz-chao {
+  animation: cen-luz-chao 15s ease-in-out infinite alternate;
+}
+
+@keyframes cen-luz-chao {
+  from {
+    transform: translateX(520px);
+  }
+  to {
+    transform: translateX(-420px);
+  }
+}
+
+/* o portão sul fechando e o giroflex aceso */
+.cen-portao {
+  animation: cen-portao 18s linear both;
+}
+
+@keyframes cen-portao {
+  to {
+    transform: translateX(-250px);
+  }
+}
+
+.cen-giroflex {
+  animation: cen-pisca 0.7s steps(1) infinite;
+}
+
+/* a malha fantasma: a teia térmica desce devagar e tremula */
+.cen-malha {
+  opacity: 0.3;
+  animation:
+    cen-malha-desce 20s ease-out both,
+    cen-malha-brilha 2.4s ease-in-out infinite alternate;
+}
+
+@keyframes cen-malha-desce {
+  from {
+    transform: translateY(-260px);
+  }
+}
+
+@keyframes cen-malha-brilha {
+  from {
+    opacity: 0.12;
+  }
+  to {
+    opacity: 0.38;
+  }
+}
+
+/* ---- cena 3: o chão aceso e o alarme do bunker ---- */
+
+/* a rede de fungos pulsa igual um coração: duas batidas e uma pausa */
+.cen-raiz {
+  opacity: 0.4;
+  animation: cen-raiz 1.6s ease-out infinite;
+}
+
+@keyframes cen-raiz {
+  0%,
+  45%,
+  100% {
+    opacity: 0.4;
+  }
+  10% {
+    opacity: 1;
+  }
+  25% {
+    opacity: 0.55;
+  }
+  32% {
+    opacity: 0.85;
+  }
+}
+
+.cen-alarme {
+  animation: cen-alarme 0.7s steps(2, jump-none) infinite;
+}
+
+@keyframes cen-alarme {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0.15;
+  }
+}
+
+/* ---- cena 4: o Drone Predador ---- */
+
+/* o vento das hélices sacode a copa */
+.cen-copa-vento {
+  transform-origin: 600px 0;
+  animation: cen-copa-vento 0.45s ease-in-out infinite alternate;
+}
+
+@keyframes cen-copa-vento {
+  from {
+    transform: translateY(-6px) skewX(-1.2deg);
+  }
+  to {
+    transform: translateY(4px) skewX(1.2deg);
+  }
+}
+
+/* o Predador desce devagar e fica pairando */
+.cen-predador {
+  animation:
+    cen-predador-desce 6s ease-out both,
+    cen-paira 1.3s ease-in-out 6s infinite alternate;
+}
+
+@keyframes cen-predador-desce {
+  from {
+    transform: translateY(-220px);
+  }
+}
+
+/* com a mira travada ele já chegou: só paira */
+.cen-predador--parado {
+  animation: cen-paira 1.3s ease-in-out infinite alternate;
+}
+
+@keyframes cen-paira {
+  to {
+    transform: translateY(8px);
+  }
+}
+
+/* o laser procura no chão, de um lado para o outro */
+/* o laser só liga depois que o drone termina de descer */
+.cen-laser {
+  opacity: 0;
+  animation:
+    cen-laser-liga 0.3s ease-out 5.5s forwards,
+    cen-laser-varre 2.6s ease-in-out infinite alternate;
+}
+
+@keyframes cen-laser-liga {
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes cen-laser-varre {
+  from {
+    transform: rotate(-22deg);
+  }
+  to {
+    transform: rotate(16deg);
+  }
+}
+
+/* travado: o laser para na mochila e treme de leve */
+.cen-laser--travado {
+  opacity: 1;
+  animation: cen-laser-treme 0.12s steps(2, jump-none) infinite;
+}
+
+@keyframes cen-laser-treme {
+  from {
+    transform: rotate(-0.4deg);
+  }
+  to {
+    transform: rotate(0.4deg);
+  }
+}
+
+.cen-reticula {
+  animation: cen-reticula 0.8s ease-out infinite;
+}
+
+@keyframes cen-reticula {
+  from {
+    transform: scale(1.6);
+    opacity: 0.2;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* ---- cena 5: a ravina, a fenda e o barco ---- */
+
+/* o sprint: passada curta e rápida, as pedras crescendo na frente */
+.cenario[data-ambiente='ravina'] .cen-balanco {
+  animation: cen-passada 0.24s ease-in-out infinite alternate;
+}
+
+.cen-aproxima--ravina {
+  animation-duration: 20s;
+}
+
+/* na ravina o Predador já chegou: o laser liga logo */
+.cenario[data-ambiente='ravina'] .cen-predador {
+  animation: cen-paira 1.3s ease-in-out infinite alternate;
+}
+
+.cenario[data-ambiente='ravina'] .cen-laser {
+  animation-delay: 0s;
+}
+
+/* no leito: passos mais calmos, chapinhando */
+.cenario[data-ambiente='fenda'] .cen-balanco,
+.cenario[data-ambiente='leito'] .cen-balanco {
+  animation: cen-passada 0.42s ease-in-out infinite alternate;
+}
+
+/* a explosão: um clarão, depois o fogo baixando e tremendo */
+.cen-explosao {
+  animation: cen-explosao 4s ease-out both;
+}
+
+@keyframes cen-explosao {
+  0% {
+    opacity: 0;
+  }
+  6% {
+    opacity: 1;
+  }
+  40% {
+    opacity: 0.55;
+  }
+  100% {
+    opacity: 0.35;
+  }
+}
+
+/* o barco: sem passada, só o balanço da água */
+.cen-barco {
+  transform-origin: 600px 1000px;
+  animation: cen-barco 4.5s ease-in-out infinite alternate;
+}
+
+@keyframes cen-barco {
+  from {
+    transform: rotate(-1deg) translateY(0);
+  }
+  to {
+    transform: rotate(1deg) translateY(6px);
+  }
+}
+
+.cen-barco__luz {
+  animation: cen-fungo 2.4s ease-in-out infinite;
+}

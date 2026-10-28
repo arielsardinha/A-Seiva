@@ -109,6 +109,16 @@ export function Tutorial() {
               <Linha amostra={<span className="take__id">T04</span>} titulo="Número do take">
                 Identifica o take. Os takes se gravam um de cada vez, na ordem.
               </Linha>
+              <Linha
+                amostra={
+                  <span className="take__quem" data-quem="dito">
+                    Dito <small>· voz natural, sem RVC</small>
+                  </span>
+                }
+                titulo="Quem fala"
+              >
+                O personagem do take e como gravar. A Lis passa pelo RVC; o Dito é a sua voz natural.
+              </Linha>
               <Linha amostra={<span className="take__duracao">~9 s</span>} titulo="Duração estimada">
                 Quanto a fala deve levar, só como referência. Não precisa ser exato.
               </Linha>

@@ -34,6 +34,25 @@
   padding: 0.9rem 1.25rem 0.6rem;
 }
 
+.tp__linha {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem 0.75rem;
+}
+
+/* troca de cena: cada cena lembra o próprio take e os gravados */
+.tp__cena {
+  min-height: 2rem;
+  padding: 0.15rem 0.5rem;
+  border: 1.5px solid var(--botao-borda);
+  border-radius: 0.45rem;
+  background: var(--botao-bg);
+  color: var(--texto);
+  font: 600 0.9rem var(--fonte-ui);
+  cursor: pointer;
+}
+
 .tp__titulo {
   margin: 0;
   color: var(--ambar);
@@ -440,6 +459,34 @@
 
 .take[data-gravado='true'] .take__id {
   background: var(--verde);
+}
+
+.take__quem {
+  padding: 0.05rem 0.55rem;
+  border: 1px solid var(--ambar);
+  border-radius: 0.3rem;
+  color: var(--ambar);
+  font-weight: 700;
+}
+
+.take__quem[data-quem='dito'] {
+  border-color: var(--azul);
+  color: var(--azul);
+}
+
+.take__quem[data-quem='vigia'] {
+  border-color: var(--vermelho);
+  color: var(--vermelho);
+}
+
+.take__quem[data-quem='leo'] {
+  border-color: var(--azul);
+  color: var(--azul);
+}
+
+.take__quem small {
+  color: var(--suave);
+  font-weight: 400;
 }
 
 .take__duracao {

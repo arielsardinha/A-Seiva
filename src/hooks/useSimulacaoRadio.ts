@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react'
-import { FREQUENCIA_MHZ } from '../data/cena01'
 
 export type Energia = 'off' | 'boot' | 'on'
 export type EstadoRadio = 'desligado' | 'buscando' | 'conectado' | 'alerta'
@@ -12,9 +11,14 @@ const entre = (n: number, min: number, max: number) => Math.min(max, Math.max(mi
  * Frequência mostrada no visor: varre a faixa enquanto busca e assenta na frequência do canal ao conectar.
  * `null` enquanto o rádio ainda não tem frequência para mostrar (desligado ou iniciando).
  */
-export function useFrequencia(energia: Energia, estado: EstadoRadio, reduzMovimento: boolean): number | null {
-  const [freq, setFreq] = useState(FREQUENCIA_MHZ)
-  const atual = useRef(FREQUENCIA_MHZ)
+export function useFrequencia(
+  energia: Energia,
+  estado: EstadoRadio,
+  reduzMovimento: boolean,
+  alvo: number,
+): number | null {
+  const [freq, setFreq] = useState(alvo)
+  const atual = useRef(alvo)
   const fase = useRef(0)
 
   useEffect(() => {
@@ -29,24 +33,24 @@ export function useFrequencia(energia: Energia, estado: EstadoRadio, reduzMovime
       const id = window.setInterval(() => {
         fase.current += passoMs / 1000
         const t = fase.current
-        aplicar(arredondar(FREQUENCIA_MHZ + 4.2 * Math.sin(t * 0.8) + 1.3 * Math.sin(t * 2.1 + 1)))
+        aplicar(arredondar(alvo + 4.2 * Math.sin(t * 0.8) + 1.3 * Math.sin(t * 2.1 + 1)))
       }, passoMs)
       return () => window.clearInterval(id)
     }
 
     // conectado/alerta: assenta na frequência do canal
     const id = window.setInterval(() => {
-      const falta = FREQUENCIA_MHZ - atual.current
+      const falta = alvo - atual.current
       // a frequência anda de 0,1 em 0,1: perto o bastante, assenta de uma vez
       if (Math.abs(falta) < 0.15) {
-        aplicar(FREQUENCIA_MHZ)
+        aplicar(alvo)
         window.clearInterval(id)
       } else {
         aplicar(arredondar(atual.current + falta * 0.3))
       }
     }, 70)
     return () => window.clearInterval(id)
-  }, [energia, estado, reduzMovimento])
+  }, [energia, estado, reduzMovimento, alvo])
 
   return energia === 'on' ? freq : null
 }

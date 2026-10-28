@@ -4,6 +4,7 @@ import { App } from './App'
 import './styles/base.css'
 import './styles/radio.css'
 import './styles/teleprompter.css'
+import './styles/cenario.css'
 
 const raiz = document.getElementById('root')
 if (!raiz) throw new Error('Elemento #root não encontrado')

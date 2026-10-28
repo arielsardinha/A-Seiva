@@ -26,9 +26,80 @@ export const NOMES_ESCUTA: Record<CamadaEscuta, string> = {
   batida: 'batida de corrida',
 }
 
+/**
+ * Onde o corredor está e o que acontece em volta dele (a imagem do painel da esquerda).
+ * Na mata, o que aparece além das árvores (drone, fogo, sonar, rio) vem da `escuta` do take.
+ */
+export type Ambiente =
+  | 'estrada'
+  | 'parada'
+  | 'zumbido'
+  | 'holofote'
+  | 'partida'
+  | 'mata'
+  | 'termico'
+  | 'cerca'
+  | 'patio'
+  | 'galpao'
+  | 'portao'
+  | 'malha'
+  | 'calmaria'
+  | 'bunker'
+  | 'predador'
+  | 'mira'
+  | 'ravina'
+  | 'fenda'
+  | 'leito'
+  | 'barco'
+
+/** Como cada ambiente aparece escrito sobre a imagem. */
+export const AMBIENTES: Record<Ambiente, { lugar: string; agora: string }> = {
+  estrada: { lugar: 'Na caminhonete do Dito', agora: 'Estrada de terra, noite. Ele dirige e puxa assunto.' },
+  parada: { lugar: 'Na caminhonete do Dito', agora: 'Parados na beira da mata, motor em marcha lenta.' },
+  zumbido: { lugar: 'Na caminhonete do Dito', agora: 'Um zumbido no céu. O rádio do painel falha.' },
+  holofote: { lugar: 'Na caminhonete do Dito', agora: 'Um drone varre a estrada com o holofote.' },
+  partida: { lugar: 'A pé, na beira da mata', agora: 'A caminhonete arranca e o drone vai atrás dela.' },
+  mata: { lugar: 'Correndo na mata', agora: 'Noite, debaixo das árvores. O rádio de pulso na mão.' },
+  termico: { lugar: 'Na mata, na mira da torre', agora: 'A câmera térmica do vigia achou um ponto quente: você.' },
+  cerca: { lugar: 'Na beira do Setor 7', agora: 'A mata acaba. Pátio aberto, um galpão e o holofote girando.' },
+  patio: { lugar: 'Atravessando o pátio', agora: 'Terra aberta até o galpão. O holofote está na outra ponta.' },
+  galpao: { lugar: 'Na sombra do galpão', agora: 'Encostado na parede de zinco. A luz passa rente.' },
+  portao: { lugar: 'Rumo ao portão sul', agora: 'O portão está fechando e os cães vêm atrás.' },
+  malha: { lugar: 'Debaixo da malha fantasma', agora: 'Drones Varredores acima da copa. Uma rede térmica desce do céu.' },
+  calmaria: { lugar: 'Na mata, fora da malha', agora: 'Tudo quieto. Entre as raízes, o chão acende verde, bem fraquinho.' },
+  bunker: { lugar: 'Na mata, ouvindo o bunker', agora: 'A mata segue quieta. O alarme e o maçarico vêm todos pelo rádio.' },
+  predador: { lugar: 'Na mata, com o Leo no rádio', agora: 'Uma sombra enorme desce sobre a copa. Rotores pesados, militares.' },
+  mira: { lugar: 'Na mira do Drone Predador', agora: 'O laser vermelho travou na sua mochila. A ravina fica à direita.' },
+  ravina: { lugar: 'Sprint até a ravina', agora: 'Duas pedras gigantes e uma fenda estreita. O laser procura de novo.' },
+  fenda: { lugar: 'No fundo da fenda', agora: 'O Predador bateu nas pedras lá em cima. O fogo ilumina o desfiladeiro.' },
+  leito: { lugar: 'No leito da ravina', agora: 'Água rasa entre paredes de pedra. Elas escondem o seu calor.' },
+  barco: { lugar: 'No barco autônomo', agora: 'Descendo o rio no piloto automático, rumo à base segura.' },
+}
+
+/** O que aparece na mata para cada camada da escuta (as que não têm imagem ficam de fora). */
+export const VISTAS_ESCUTA: Partial<Record<CamadaEscuta, string>> = {
+  drone: 'drone varrendo acima da copa',
+  fogo: 'brilho de fogo ao longe',
+  sonar: 'ping de sonar vindo do rio',
+  rio: 'o rio aparece entre as árvores',
+}
+
+/** Quem fala no take. Só a Lis passa pelo RVC. */
+export type Personagem = 'lis' | 'dito' | 'vigia' | 'leo'
+
+/** Nome e como gravar, mostrados no cabeçalho de cada take. */
+export const PERSONAGENS: Record<Personagem, { nome: string; gravacao: string }> = {
+  lis: { nome: 'Lis', gravacao: 'com RVC' },
+  dito: { nome: 'Dito', gravacao: 'voz natural, sem RVC' },
+  vigia: { nome: 'Vigia', gravacao: 'voz natural, sem RVC' },
+  leo: { nome: 'Leo', gravacao: 'com o RVC do Leo' },
+}
+
 export interface Take {
-  /** Identificador único. Os takes de fala usam T01, T02… */
+  /** Identificador único na cena. Os takes da Lis usam T01, T02…; os do Dito, D01…; os do vigia, V01…; os do Leo, L01… */
   id: string
+  /** Quem fala. Se faltar, é a Lis. */
+  quem?: Personagem
   /** 'fala' = você grava. 'sistema' = voz do sistema no visor, NÃO se grava. */
   tipo: 'fala' | 'sistema'
   /** Texto com as marcas acima. Em 'sistema', é a mensagem que aparece no visor. */
@@ -41,6 +112,8 @@ export interface Take {
   duracaoSeg: number
   /** Estado visual do rádio enquanto este take está na tela. */
   radio: EstadoRadioTake
+  /** Onde o corredor está (a imagem do painel). Se faltar, continua o do take anterior. */
+  ambiente?: Ambiente
   /** Sons que o sound design coloca ANTES deste take (aparecem como chips). */
   cuesAntes?: string[]
   /** Sons que o sound design coloca DEPOIS deste take. */
@@ -64,6 +137,112 @@ export const FREQUENCIA_MHZ = 88.3
 export const TAKE_INICIO_RADAR = 'T11'
 
 export const cena01: Take[] = [
+  // ---- Prólogo · a estrada (Dito) ---------------------------------------------
+  {
+    id: 'D01',
+    quem: 'dito',
+    tipo: 'fala',
+    texto: 'Vinte anos rodando essa estrada. // Nunca levei ninguém tão **calado**.',
+    direcao: 'tranquilo, motorista que puxa assunto pra passar o tempo. Sorriso na voz',
+    volume: 4,
+    duracaoSeg: 7,
+    radio: 'buscando',
+    ambiente: 'estrada',
+    cuesAntes: ['noite: caminhonete velha em estrada de terra, motor rouco, cascalho, grilos, rádio AM chiando no painel'],
+  },
+  {
+    id: 'D02',
+    quem: 'dito',
+    tipo: 'fala',
+    texto: 'Tudo bem. / Me pagaram pra não perguntar. // E eu sou **muito** bom nisso.',
+    direcao: 'brincalhão, olhando de lado pro passageiro',
+    volume: 4,
+    duracaoSeg: 7,
+    radio: 'buscando',
+  },
+  {
+    id: 'D03',
+    quem: 'dito',
+    tipo: 'fala',
+    texto: 'Só vou te contar uma coisa. // Lá dentro da mata, / de noite, / o chão **acende**. // Verde. / Feito brasa fria.',
+    direcao: 'a voz desce. Meio supersticioso, meio sério',
+    volume: 3,
+    duracaoSeg: 9,
+    radio: 'buscando',
+  },
+  {
+    id: 'D04',
+    quem: 'dito',
+    tipo: 'fala',
+    texto: 'Minha vó dizia que era alma. // Eu acho que é cogumelo. // *(ri)* Mas não piso lá.',
+    direcao: 'ri de si mesmo',
+    volume: 4,
+    duracaoSeg: 6,
+    radio: 'buscando',
+  },
+  {
+    id: 'D05',
+    quem: 'dito',
+    tipo: 'fala',
+    texto: 'É aqui. // Daqui pra frente não passa carro. / Só **gente**.',
+    direcao: 'prático, fim de viagem',
+    volume: 4,
+    duracaoSeg: 5,
+    radio: 'buscando',
+    ambiente: 'parada',
+    cuesAntes: ['a caminhonete reduz e para no cascalho, motor em marcha lenta'],
+  },
+  {
+    id: 'D06',
+    quem: 'dito',
+    tipo: 'fala',
+    texto: 'Peraí. // *(silêncio)* // Isso aí não é **bicho**.',
+    direcao: 'trava no meio. Escutando',
+    volume: 4,
+    duracaoSeg: 5,
+    radio: 'buscando',
+    ambiente: 'zumbido',
+    cuesAntes: ['zumbido agudo nasce no alto, longe, e vai crescendo; o rádio do painel começa a falhar'],
+  },
+  {
+    id: 'D07',
+    quem: 'dito',
+    tipo: 'fala',
+    texto: 'É **drone**. // Ele tá vendo o motor. / O **calor** do motor. // Não você.',
+    direcao: 'entende tudo de uma vez. Rápido nas ideias, não na boca',
+    volume: 6,
+    duracaoSeg: 7,
+    radio: 'buscando',
+    ambiente: 'holofote',
+    cuesAntes: ['facho de luz branca passa por cima das árvores e varre a estrada'],
+  },
+  {
+    id: 'D08',
+    quem: 'dito',
+    tipo: 'fala',
+    texto: 'Então é fácil. // Eu acelero pro outro lado, / ele vem atrás de mim. // A mata é **sua**.',
+    direcao: 'decidido, quase calmo. Sem heroísmo, como quem resolve um problema da roça',
+    volume: 5,
+    duracaoSeg: 8,
+    radio: 'buscando',
+  },
+  {
+    id: 'D09',
+    quem: 'dito',
+    tipo: 'fala',
+    texto: 'Se o chão acender, / lembra do Dito. // Boa sorte, **calado**.',
+    direcao: 'última fala, já engatando a marcha. Meio sorriso',
+    volume: [5, 3],
+    duracaoSeg: 6,
+    radio: 'buscando',
+    ambiente: 'partida',
+    cuesDepois: [
+      'porta batendo; a caminhonete arranca e some, o zumbido do drone vai atrás dela até sumir',
+      'só a floresta e os passos do corredor entre as folhas; um chiado nasce no rádio de pulso',
+    ],
+  },
+
+  // ---- Bloco 1 · Linha aberta (Lis) --------------------------------------------
   {
     id: 'T01',
     tipo: 'fala',
@@ -72,7 +251,8 @@ export const cena01: Take[] = [
     volume: 3,
     duracaoSeg: 4,
     radio: 'buscando',
-    cuesAntes: ['alarme baixo e distante, algo queimando, ventilação, estática'],
+    ambiente: 'mata',
+    cuesAntes: ['do lado dela: alarme baixo e distante, algo queimando, ventilação, estática'],
   },
   {
     id: 'T02',
@@ -105,16 +285,25 @@ export const cena01: Take[] = [
   {
     id: 'T04',
     tipo: 'fala',
-    texto:
-      'Eu tô te ouvindo. // Esses passos… / você já tá correndo. / Ótimo. // Então **escuta**, / porque eu só vou falar **uma vez**.',
+    texto: 'Eu tô te ouvindo. // Esses passos… / você já tá na mata. / **Ótimo.**',
     direcao: 'já operando, clara. "Esses passos…" é ela ouvindo',
     volume: 5,
-    duracaoSeg: 9,
+    duracaoSeg: 6,
     radio: 'conectado',
-    cuesDepois: ['entram os passos do corredor'],
-    // os passos entram já aqui para você ouvi-los em "Esses passos…"; mova para o T05 para seguir o cue à risca
     escuta: ['passos'],
   },
+  {
+    id: 'T04b',
+    tipo: 'fala',
+    texto:
+      'Aquele motor indo embora… / era o Dito, né? // *(respira)* Ele sabia o risco. // Então **escuta**, / porque eu só vou falar uma vez.',
+    direcao: 'a voz cai. Ela ouviu o motor sumindo e sabe o que significa. Não chora: engole',
+    volume: 4,
+    duracaoSeg: 9,
+    radio: 'conectado',
+  },
+
+  // ---- Bloco 2 · O que você carrega (Lis) --------------------------------------
   {
     id: 'T05',
     tipo: 'fala',
@@ -158,14 +347,16 @@ export const cena01: Take[] = [
     cuesAntes: ['fogo distante, bem baixo'],
     escuta: ['passos', 'drone', 'fogo'],
   },
+
+  // ---- Bloco 3 · Por que você, e pra onde (Lis) --------------------------------
   {
     id: 'T09',
     tipo: 'fala',
     texto:
-      'E sim, eu sei que você deve estar pensando: / por que **eu**? // Eles caçam por **calor** e por **barulho**. / Barcos, / drones, / sonar.',
-    direcao: 'rápida, lógica, quase falando sozinha',
+      'Você viu a caminhonete. // Motor **esquenta**. / Motor faz **barulho**. // É assim que eles caçam. / Barco, / drone, / sonar.',
+    direcao: 'rápida, lógica. Usa o que acabou de acontecer como prova',
     volume: 5,
-    duracaoSeg: 8,
+    duracaoSeg: 9,
     radio: 'conectado',
     cuesAntes: ['floresta, ping de sonar discreto'],
     escuta: ['passos', 'floresta', 'sonar'],

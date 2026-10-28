@@ -1,6 +1,22 @@
 # Rádio Dra. Lis
 
-Simulador do rádio da Dra. Lis conectando, com o texto da **cena 1 de A Seiva** passando ao lado, para ler enquanto você grava a voz. O app não grava nada: ele só ajuda a atuar.
+Simulador do rádio da Dra. Lis conectando, com o texto de **A Seiva** passando ao lado, para ler enquanto você grava a voz. O app não grava nada: ele só ajuda a atuar.
+
+O capítulo 1 tem cinco cenas, escolhidas no seletor ao lado do título. Cada cena lembra o take em que você parou.
+
+| Cena | O que acontece | Quem fala |
+|---|---|---|
+| 1 | O Dito leva o corredor até a mata, o drone, o primeiro contato da Lis | Dito (voz natural), Lis (RVC) |
+| 2 | O Setor 7: o pátio, o galpão, o portão sul e a malha fantasma | Vigia (voz natural), Lis |
+| 3 | A calmaria e o bunker da Lis invadido; o rádio cai em estática | Lis |
+| 4 | O rádio pula para a 104.7, o Leo entra e o Drone Predador chega | Leo (RVC do Leo), voz do sistema |
+| 5 | A ravina, o drone cai, o barco e o fim do capítulo | Leo |
+
+Os textos ficam em `src/data/cena01.ts` a `cena05.ts`, e a lista das cenas em `src/data/cenas.ts`. O que segue abaixo descreve a cena 1 em detalhe.
+
+A cena abre com o **prólogo do Dito** (D01 a D09), o mateiro que leva o corredor de caminhonete até a mata, e segue com a Lis (T01 a T14, mais o T04b). Cada take mostra quem fala e como gravar: a Lis passa pelo RVC, o Dito é a sua voz natural.
+
+Atrás do rádio, a imagem mostra **onde o corredor está** em cada take, para você atuar dentro da cena: dentro da caminhonete do Dito na estrada de terra (rodando, parada, o zumbido no céu, o holofote do drone varrendo a estrada), a caminhonete indo embora com o drone atrás e, da Lis em diante, a mata à noite com o corredor correndo. Na mata, o que aparece em volta segue o roteiro: drone acima da copa, fogo ao longe, sonar e o rio. Uma legenda no alto diz o lugar e o que está acontecendo. Quem decide é o campo `ambiente` de cada take em `src/data/cena01.ts` (se faltar, continua o do take anterior).
 
 ## Como rodar
 
@@ -17,7 +33,7 @@ Outros comandos: `npm test` (testes do interpretador de marcas), `npm run build`
 
 ## Como usar na gravação
 
-1. **Ligar o rádio**: clique de power, visor "INICIANDO…" e depois "BUSCANDO CANAL…". O rádio fica buscando enquanto você fala o **T01** e o **T02**.
+1. **Ligar o rádio**: clique de power, visor "INICIANDO…" e depois "BUSCANDO CANAL…". O rádio fica buscando durante o prólogo do Dito e enquanto você fala o **T01** e o **T02**.
 2. Ao passar do T02 para o T03 (ou ao apertar **Conectar canal**, que pula direto para o T03) o rádio faz o bipe e mostra "CANAL SEGURO ESTABELECIDO". Essa linha é a voz do sistema: **não se grava**.
 3. No **T07** e no **T08** o rádio entra em alerta (LED âmbar, mais ruído). Do **T09** volta ao normal. A partir do **T11** aparece um mini-radar no visor.
 4. No **T14**, "Próximo" vira **Encerrar TX** e o visor mostra "TX ENCERRADO".

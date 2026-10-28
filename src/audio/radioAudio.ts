@@ -8,7 +8,7 @@
 import type { CamadaEscuta } from '../data/cena01'
 import { Camadas } from './camadas'
 
-export type EstadoSom = 'desligado' | 'iniciando' | 'buscando' | 'conectado' | 'alerta'
+export type EstadoSom = 'desligado' | 'iniciando' | 'buscando' | 'conectado' | 'alerta' | 'perdido'
 
 interface PerfilChiado {
   ganho: number
@@ -27,6 +27,8 @@ const PERFIS: Record<EstadoSom, PerfilChiado> = {
   buscando: { ganho: 0.14, oscilacao: 0.7, centro: 2600, q: 0.8, transicao: 0.15 },
   conectado: { ganho: 0, oscilacao: 0, centro: 3200, q: 0.4, transicao: 0.04 },
   alerta: { ganho: 0, oscilacao: 0, centro: 1900, q: 0.3, transicao: 0.04 },
+  // a transmissão caiu: estática cheia, sem bipe de busca
+  perdido: { ganho: 0.16, oscilacao: 0.35, centro: 2400, q: 0.4, transicao: 0.02 },
 }
 
 class RadioAudio {
@@ -113,6 +115,14 @@ class RadioAudio {
     this.rajada(t, 0.22, 0.09, 3000)
     this.estalo(t + 0.22, 0.2)
     this.tom(t + 0.24, 520, 0.08, 0.05, 'sine')
+  }
+
+  /** A transmissão cai: um estalo seco, sem o bipe de fim. A estática vem do estado 'perdido'. */
+  cair() {
+    const t = this.agora()
+    if (t === null) return
+    this.estalo(t, 0.3)
+    this.rajada(t + 0.02, 0.12, 0.12, 2000)
   }
 
   private async garantirContexto(): Promise<boolean> {

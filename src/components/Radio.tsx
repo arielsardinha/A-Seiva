@@ -1,4 +1,3 @@
-import { FREQUENCIA_MHZ } from '../data/cena01'
 import { useReducedMotion } from '../hooks/useReducedMotion'
 import { SINAL_MAX, useFrequencia, useSinal, type Energia, type EstadoRadio } from '../hooks/useSimulacaoRadio'
 import { Espectro } from './Espectro'
@@ -11,6 +10,10 @@ interface RadioProps {
   aviso: boolean
   /** O take final terminou: "TX ENCERRADO". */
   txEncerrado: boolean
+  /** A transmissão caiu em vez de encerrar: "SINAL PERDIDO", sem sinal e só estática. */
+  sinalPerdido: boolean
+  /** Frequência em que o rádio se fixa nesta cena (MHz). */
+  frequencia: number
   /** Mini-radar do visor (a partir do T11). */
   radar: boolean
   onPower: () => void
@@ -21,9 +24,10 @@ interface TextoVisor {
   etiqueta: string
 }
 
-function textoDoVisor({ energia, estado, aviso, txEncerrado }: RadioProps): TextoVisor | null {
+function textoDoVisor({ energia, estado, aviso, txEncerrado, sinalPerdido }: RadioProps): TextoVisor | null {
   if (energia === 'off') return null
   if (energia === 'boot') return { linha: 'INICIANDO…', etiqueta: 'TESTE' }
+  if (txEncerrado && sinalPerdido) return { linha: 'SINAL PERDIDO', etiqueta: 'MUDO' }
   if (txEncerrado) return { linha: 'TX ENCERRADO', etiqueta: 'FIM' }
   switch (estado) {
     case 'buscando':
@@ -59,11 +63,12 @@ function MedidorSinal({ nivel }: { nivel: number }) {
   )
 }
 
+// a faixa do botão cobre o canal da Lis (88.3) e a emergência (104.7)
 const FAIXA_MIN = 84
-const FAIXA_MAX = 93
+const FAIXA_MAX = 108
 
 function Sintonia({ freq }: { freq: number }) {
-  const angulo = ((freq - FAIXA_MIN) / (FAIXA_MAX - FAIXA_MIN)) * 270 - 135
+  const angulo = Math.min(135, Math.max(-135, ((freq - FAIXA_MIN) / (FAIXA_MAX - FAIXA_MIN)) * 270 - 135))
   return (
     <div className="sintonia">
       <svg viewBox="0 0 100 100" className="sintonia__botao" aria-hidden="true">
@@ -119,25 +124,28 @@ function AltoFalante() {
 }
 
 export function Radio(props: RadioProps) {
-  const { energia, estado, txEncerrado, radar, onPower } = props
+  const { energia, estado, txEncerrado, sinalPerdido, frequencia, radar, onPower } = props
   const reduzMovimento = useReducedMotion()
-  const freq = useFrequencia(energia, estado, reduzMovimento)
-  const nivel = useSinal(energia, estado, reduzMovimento)
+  const freq = useFrequencia(energia, estado, reduzMovimento, frequencia)
+  const sinal = useSinal(energia, estado, reduzMovimento)
   const visor = textoDoVisor(props)
   const ligado = energia !== 'off'
   const operando = energia === 'on'
+  // sinal perdido: o canal morre, só fica a estática
+  const caiu = operando && txEncerrado && sinalPerdido
+  const nivel = caiu ? 0 : sinal
 
-  const modoRx: ModoLed = !operando ? 'apagado' : estado === 'buscando' ? 'tremula' : estado === 'alerta' ? 'tremula' : 'aceso'
+  const modoRx: ModoLed = !operando || caiu ? 'apagado' : estado === 'buscando' ? 'tremula' : estado === 'alerta' ? 'tremula' : 'aceso'
   const modoTx: ModoLed = !operando || txEncerrado ? 'apagado' : estado === 'buscando' ? 'pisca' : 'aceso'
   const corCanal = estado === 'alerta' ? 'ambar' : 'verde'
-  const modoCanal: ModoLed = !operando || estado === 'buscando' ? 'apagado' : estado === 'alerta' ? 'pisca' : 'aceso'
+  const modoCanal: ModoLed = !operando || caiu || estado === 'buscando' ? 'apagado' : estado === 'alerta' ? 'pisca' : 'aceso'
 
-  const textoFreq = freq === null ? '---.-' : freq.toFixed(1).padStart(5, '0')
+  const textoFreq = freq === null || caiu ? '---.-' : freq.toFixed(1).padStart(5, '0')
   const estadoVisual = ligado ? estado : 'desligado'
 
   return (
     <div className="radio-wrap">
-      <div className="radio" data-estado={estadoVisual} data-energia={energia} data-fim={txEncerrado}>
+      <div className="radio" data-estado={estadoVisual} data-energia={energia} data-fim={txEncerrado} data-caiu={caiu}>
         <Antena />
         <div className="radio__corpo">
           <i className="parafuso parafuso--a" />
@@ -191,11 +199,11 @@ export function Radio(props: RadioProps) {
 
           <div className="radio__meio">
             <MedidorSinal nivel={nivel} />
-            <Sintonia freq={freq ?? FREQUENCIA_MHZ} />
+            <Sintonia freq={freq ?? frequencia} />
           </div>
 
           <div className="radio__espectro">
-            <Espectro estado={ligado ? estado : 'desligado'} reduzMovimento={reduzMovimento} />
+            <Espectro estado={!ligado ? 'desligado' : caiu ? 'buscando' : estado} reduzMovimento={reduzMovimento} />
           </div>
 
           <AltoFalante />

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { cena01 } from '../data/cena01'
+import { CENAS } from '../data/cenas'
 import { parseMarcas } from './marcas'
 
 describe('parseMarcas', () => {
@@ -64,21 +64,32 @@ describe('parseMarcas', () => {
   })
 })
 
-describe('roteiro da cena 1', () => {
-  it('interpreta todos os takes sem sobrar marcação crua', () => {
-    for (const take of cena01) {
-      const marcas = parseMarcas(take.texto)
-      expect(marcas.length, take.id).toBeGreaterThan(0)
-      for (const marca of marcas) {
-        if (marca.tipo === 'texto') expect(marca.texto, take.id).not.toMatch(/\*\*|\*\(|\)\*|\//)
+for (const cena of CENAS) {
+  describe(`roteiro: ${cena.titulo}`, () => {
+    it('interpreta todos os takes sem sobrar marcação crua', () => {
+      for (const take of cena.takes) {
+        const marcas = parseMarcas(take.texto)
+        expect(marcas.length, take.id).toBeGreaterThan(0)
+        for (const marca of marcas) {
+          if (marca.tipo === 'texto') expect(marca.texto, take.id).not.toMatch(/\*\*|\*\(|\)\*|\//)
+        }
       }
-    }
-  })
+    })
 
-  it('mantém o volume dentro do limite de 7', () => {
-    for (const take of cena01.filter((t) => t.tipo === 'fala')) {
-      const volumes = typeof take.volume === 'number' ? [take.volume] : take.volume
-      for (const v of volumes) expect(v, take.id).toBeLessThanOrEqual(7)
-    }
+    it('mantém o volume dentro do limite de 7', () => {
+      for (const take of cena.takes.filter((t) => t.tipo === 'fala')) {
+        const volumes = typeof take.volume === 'number' ? [take.volume] : take.volume
+        for (const v of volumes) expect(v, take.id).toBeLessThanOrEqual(7)
+      }
+    })
+
+    it('não repete o id de nenhum take', () => {
+      const ids = cena.takes.map((t) => t.id)
+      expect(new Set(ids).size).toBe(ids.length)
+    })
+
+    it('começa o radar num take que existe', () => {
+      expect(cena.takes.some((t) => t.id === cena.takeInicioRadar)).toBe(true)
+    })
   })
-})
+}
