@@ -55,7 +55,7 @@ export const cena02: Take[] = [
     id: 'V02',
     quem: 'vigia',
     tipo: 'fala',
-    texto: '*(pausa)* // Eu sei que é o último turno. / Você me fala isso todo dia.',
+    texto: 'É, eu sei que é o último turno. // Cê me fala isso todo dia.',
     direcao: 'a pausa é a base respondendo. Ri sem vontade',
     volume: 4,
     duracaoSeg: 6,
@@ -109,7 +109,7 @@ export const cena02: Take[] = [
   {
     id: 'T04',
     tipo: 'fala',
-    texto: 'Fecharam o perímetro. // As trilhas do norte tão bloqueadas. / Todo desvio dá no mesmo lugar.',
+    texto: 'Eles fecharam o perímetro. // As trilhas do norte tão bloqueadas… todo desvio dá no mesmo lugar.',
     direcao: 'operadora, olhando o mapa. Rápida nas ideias, não na boca',
     volume: 5,
     duracaoSeg: 7,
@@ -118,7 +118,7 @@ export const cena02: Take[] = [
   {
     id: 'T05',
     tipo: 'fala',
-    texto: 'No Setor 7. // Era floresta, / até cortarem tudo. // Hoje é a base deles.',
+    texto: 'No Setor 7. // Era floresta, até cortarem tudo. // Hoje é base dos mercenários.',
     direcao: 'desprezo contido, sem discurso',
     volume: 4,
     duracaoSeg: 7,
@@ -161,7 +161,7 @@ export const cena02: Take[] = [
   {
     id: 'T09',
     tipo: 'fala',
-    texto: 'Quando eu der o sinal, / é tudo que você tem. // Até a sombra do galpão.',
+    texto: 'Quando eu der o sinal, / você corre. // Tudo que você tem, / até a sombra do galpão.',
     direcao: 'direta. Avisa o que vem',
     volume: 5,
     duracaoSeg: 6,
@@ -191,7 +191,7 @@ export const cena02: Take[] = [
   {
     id: 'T12',
     tipo: 'fala',
-    texto: '**Agora!**',
+    texto: '**Agora**! // Corre!',
     direcao: 'o sinal, a única ordem da cena. Curto, firme, sem gritar. Fique no 7',
     volume: [3, 7],
     duracaoSeg: 2,
@@ -203,7 +203,7 @@ export const cena02: Take[] = [
   {
     id: 'T13',
     tipo: 'fala',
-    texto: 'Isso! // Terra aberta, / nada em volta. // **Sessenta** metros.',
+    texto: 'Isso, isso… terra aberta, nada em volta. // **Sessenta** metros.',
     direcao: 'acompanhando. Frases curtas, mas sem acelerar a fala',
     volume: 6,
     duracaoSeg: 6,
@@ -445,8 +445,8 @@ export const cena02: Take[] = [
   {
     id: 'T33',
     tipo: 'fala',
-    texto: 'Mantenha o **ritmo**.',
-    direcao: 'seca, baixa, com som, não sussurro. Aqui quer dizer: não muda nada',
+    texto: 'Mantenha a velocidade. // Não muda nada.',
+    direcao: 'seca, baixa, com som, não sussurro',
     volume: 3,
     duracaoSeg: 2,
     radio: 'fim',

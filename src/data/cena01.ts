@@ -73,7 +73,7 @@ export const VISTAS_ESCUTA: Partial<Record<CamadaEscuta, string>> = {
 }
 
 /** Quem fala no take. */
-export type Personagem = 'lis' | 'dito' | 'vigia' | 'leo'
+export type Personagem = 'lis' | 'dito' | 'vigia' | 'leo' | 'invasor1' | 'invasor2'
 
 /** Nome mostrado no cabeçalho de cada take. */
 export const PERSONAGENS: Record<Personagem, { nome: string }> = {
@@ -81,10 +81,12 @@ export const PERSONAGENS: Record<Personagem, { nome: string }> = {
   dito: { nome: 'Dito' },
   vigia: { nome: 'Vigia' },
   leo: { nome: 'Leo' },
+  invasor1: { nome: 'Invasor 1' },
+  invasor2: { nome: 'Invasor 2' },
 }
 
 export interface Take {
-  /** Identificador único na cena. Os takes da Lis usam T01, T02…; os do Dito, D01…; os do vigia, V01…; os do Leo, L01… */
+  /** Identificador único na cena. Os takes da Lis usam T01, T02…; os do Dito, D01…; os do vigia, V01…; os do Leo, L01…; os dos invasores, I01… */
   id: string
   /** Quem fala. Se faltar, é a Lis. */
   quem?: Personagem
@@ -125,7 +127,7 @@ export const cena01: Take[] = [
     id: 'D01',
     quem: 'dito',
     tipo: 'fala',
-    texto: 'Vinte anos rodando essa estrada. // Nunca levei ninguém tão **calado**.',
+    texto: 'Vinte anos rodando essa estrada… e nunca levei ninguém tão **calado**.',
     direcao: 'tranquilo, motorista que puxa assunto pra passar o tempo. Sorriso na voz',
     volume: 4,
     duracaoSeg: 7,
@@ -137,7 +139,7 @@ export const cena01: Take[] = [
     id: 'D02',
     quem: 'dito',
     tipo: 'fala',
-    texto: 'Tudo bem. / Me pagaram pra não perguntar. // E eu sou **muito** bom nisso.',
+    texto: 'Tudo bem, tudo bem. // Me pagaram pra não perguntar. // E eu sou **muito** bom nisso.',
     direcao: 'brincalhão, olhando de lado pro passageiro',
     volume: 4,
     duracaoSeg: 7,
@@ -147,7 +149,7 @@ export const cena01: Take[] = [
     id: 'D03',
     quem: 'dito',
     tipo: 'fala',
-    texto: 'Só vou te contar uma coisa. // Lá dentro da mata, / de noite, / o chão **acende**. // Verde. / Feito brasa fria.',
+    texto: 'Só vou te contar uma coisa, tá? // Lá dentro da mata, de noite… o chão **acende**. // Verde. // Feito brasa fria.',
     direcao: 'a voz desce. Meio supersticioso, meio sério',
     volume: 3,
     duracaoSeg: 9,
@@ -157,7 +159,7 @@ export const cena01: Take[] = [
     id: 'D04',
     quem: 'dito',
     tipo: 'fala',
-    texto: 'Minha vó dizia que era alma. // Eu acho que é cogumelo. // *(ri)* Mas não piso lá.',
+    texto: 'Minha vó dizia que era alma. // Eu? // Eu acho que é cogumelo. // *(ri)* Mas não piso lá, não.',
     direcao: 'ri de si mesmo',
     volume: 4,
     duracaoSeg: 6,
@@ -167,7 +169,7 @@ export const cena01: Take[] = [
     id: 'D05',
     quem: 'dito',
     tipo: 'fala',
-    texto: 'É aqui. // Daqui pra frente não passa carro. / Só **gente**.',
+    texto: 'Pronto, é aqui. // Daqui pra frente não passa carro. // Só **gente**.',
     direcao: 'prático, fim de viagem',
     volume: 4,
     duracaoSeg: 5,
@@ -179,7 +181,7 @@ export const cena01: Take[] = [
     id: 'D06',
     quem: 'dito',
     tipo: 'fala',
-    texto: 'Peraí. // *(silêncio)* // Isso aí não é **bicho**.',
+    texto: 'Peraí… // *(silêncio)* // Isso aí não é **bicho**, não.',
     direcao: 'trava no meio. Escutando',
     volume: 4,
     duracaoSeg: 5,
@@ -240,7 +242,7 @@ export const cena01: Take[] = [
   {
     id: 'T02',
     tipo: 'fala',
-    texto: 'Na escuta? / Na escuta?! // Aqui é a **Lis**!',
+    texto: 'Alô? // Na escuta? // Na escuta?! // Aqui é a **Lis**!',
     direcao: 'a voz sobe de uma vez. Fique abaixo do 7 no "Lis"',
     volume: [3, 7],
     duracaoSeg: 3,
@@ -268,7 +270,7 @@ export const cena01: Take[] = [
   {
     id: 'T04',
     tipo: 'fala',
-    texto: 'Eu tô te ouvindo. // Esses passos… / você já tá na mata. / **Ótimo.**',
+    texto: 'Eu tô te ouvindo. // Esses passos… isso. // Você já tá na mata. // **Ótimo**.',
     direcao: 'já operando, clara. "Esses passos…" é ela ouvindo',
     volume: 5,
     duracaoSeg: 6,
@@ -301,7 +303,7 @@ export const cena01: Take[] = [
     id: 'T06',
     tipo: 'fala',
     texto:
-      'Dentro dele tá a seiva. / Dez anos de trabalho. / Energia limpa, / de graça, / pra todo mundo. // Era pra **salvar tudo**.',
+      'Dentro dele tá a seiva. // Dez anos da minha vida. // Energia limpa, de graça, pra todo mundo… // Era pra **salvar tudo**.',
     direcao: 'rápida, sem respirar, e a última frase desaba',
     volume: [5, 3],
     duracaoSeg: 9,
@@ -311,7 +313,7 @@ export const cena01: Take[] = [
     id: 'T07',
     tipo: 'fala',
     texto:
-      'Mas a Vanguarda do Norte descobriu que dá pra virar **arma**. // Uma arma que **apaga a vida**. // De continentes inteiros.',
+      'Só que a Vanguarda do Norte descobriu que dá pra virar **arma**. // Uma arma que **apaga a vida**… de continentes inteiros.',
     direcao: 'a voz cai. Sem dramatizar, devagar',
     volume: 4,
     duracaoSeg: 10,
@@ -322,7 +324,7 @@ export const cena01: Take[] = [
   {
     id: 'T08',
     tipo: 'fala',
-    texto: 'Por isso eu queimei o laboratório. // **Tudo.** // Dez anos numa noite. // Esse frasco é tudo que sobrou.',
+    texto: 'Por isso eu queimei o laboratório. // **Tudo**. // Dez anos numa noite. // Esse frasco é o que sobrou.',
     direcao: 'seca. "Tudo." sozinho, com peso',
     volume: 4,
     duracaoSeg: 8,
@@ -336,7 +338,7 @@ export const cena01: Take[] = [
     id: 'T09',
     tipo: 'fala',
     texto:
-      'Você viu a caminhonete. // Motor **esquenta**. / Motor faz **barulho**. // É assim que eles caçam. / Barco, / drone, / sonar.',
+      'Você viu a caminhonete, né? // Motor **esquenta**, motor faz **barulho**. // É assim que eles caçam: barco, drone, sonar.',
     direcao: 'rápida, lógica. Usa o que acabou de acontecer como prova',
     volume: 5,
     duracaoSeg: 9,

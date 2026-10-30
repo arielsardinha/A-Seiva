@@ -2,7 +2,7 @@
 //  A SEIVA · CENA 3 · O bunker cai (a calmaria e a invasão do bunker)
 //
 //  Mesmo formato e mesmas marcas da cena 1 (veja o topo de cena01.ts).
-//  A cena é toda da Lis. As vozes dos invasores são só som (cues), ninguém grava.
+//  A cena é da Lis, menos as duas ordens dos invasores na hora em que arrombam o bunker (I01 e I02).
 //  "—" no fim da fala é corte seco: pare no meio da palavra.
 // =============================================================================
 
@@ -47,7 +47,7 @@ export const cena03: Take[] = [
   {
     id: 'T03',
     tipo: 'fala',
-    texto: 'Seu coração tá descendo. / Eu vejo daqui. // O passo voltou a ser o **seu**.',
+    texto: 'Seu coração tá descendo, / eu vejo daqui. // Pode voltar pro seu ritmo normal… / isso. // O passo voltou a ser o **seu**.',
     direcao: 'operadora de novo, lendo os números com carinho',
     volume: 4,
     duracaoSeg: 7,
@@ -70,7 +70,7 @@ export const cena03: Take[] = [
   {
     id: 'T05',
     tipo: 'fala',
-    texto: 'Antes de tudo isso, / eu sentava no chão, / lá fora, / só pra olhar as **raízes**.',
+    texto: 'Sabe… / antes de tudo isso, / eu sentava no chão, / lá fora, / só pra olhar as **raízes**.',
     direcao: 'lembrando. Quase um sorriso',
     volume: 3,
     duracaoSeg: 7,
@@ -193,7 +193,7 @@ export const cena03: Take[] = [
   {
     id: 'T18',
     tipo: 'fala',
-    texto: '*(respira)* Calma, Lis. / **Foco.**',
+    texto: '*(respira)* Calma, Lis. // Calma. // **Foco.**',
     direcao: 'se segurando. A mesma frase da cena 1, agora para não desabar',
     volume: 4,
     duracaoSeg: 4,
@@ -259,7 +259,7 @@ export const cena03: Take[] = [
   {
     id: 'T25',
     tipo: 'fala',
-    texto: 'E eles não alcançam essa faixa.',
+    texto: 'E eles não alcançam.',
     direcao: 'seca',
     volume: 5,
     duracaoSeg: 3,
@@ -288,6 +288,27 @@ export const cena03: Take[] = [
 
   // ---- Bloco 5 · A porta ------------------------------------------------------
   {
+    id: 'I01',
+    quem: 'invasor1',
+    tipo: 'fala',
+    texto: 'Trava **ela**!',
+    direcao: 'um mercenário gritando a ordem do outro lado da sala, longe do microfone da Lis',
+    volume: 7,
+    duracaoSeg: 1,
+    radio: 'alerta',
+    cuesAntes: ['estrondo ensurdecedor: a porta de aço cai; botas entrando'],
+  },
+  {
+    id: 'I02',
+    quem: 'invasor2',
+    tipo: 'fala',
+    texto: 'Afasta do painel, / **agora**!',
+    direcao: 'outro mercenário, mais perto, com raiva. A Lis entra por cima do fim',
+    volume: 7,
+    duracaoSeg: 2,
+    radio: 'alerta',
+  },
+  {
     id: 'T28',
     tipo: 'fala',
     texto: 'Não toquem em **mim**!',
@@ -295,10 +316,6 @@ export const cena03: Take[] = [
     volume: 7,
     duracaoSeg: 3,
     radio: 'alerta',
-    cuesAntes: [
-      'estrondo ensurdecedor: a porta de aço cai; botas entrando',
-      'vozes de homens gritando ordens ao fundo, longe do microfone (só som; no livro: "Trava ela! Afasta do painel agora!")',
-    ],
   },
   {
     id: 'T29',
@@ -313,7 +330,7 @@ export const cena03: Take[] = [
   {
     id: 'T30',
     tipo: 'fala',
-    texto: '*(um "ah" curto e abafado, cortado)*',
+    texto: 'Ah—',
     direcao: 'um som curto, não é grito aberto. Se o RVC estragar, o sound design resolve',
     volume: 5,
     duracaoSeg: 2,

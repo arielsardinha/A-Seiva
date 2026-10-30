@@ -423,7 +423,9 @@
   color: var(--azul);
 }
 
-.take__quem[data-quem='vigia'] {
+.take__quem[data-quem='vigia'],
+.take__quem[data-quem='invasor1'],
+.take__quem[data-quem='invasor2'] {
   border-color: var(--vermelho);
   color: var(--vermelho);
 }
