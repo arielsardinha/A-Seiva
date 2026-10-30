@@ -30,7 +30,7 @@ export const cena03: Take[] = [
     ambiente: 'malha',
     cuesAntes: [
       'o zumbido dos Drones Varredores ainda por cima, indo embora',
-      'batida de corrida baixa, passos na mata',
+      'batida de corrida baixa, floresta',
     ],
     escuta: ['passos', 'drone'],
   },
@@ -337,7 +337,7 @@ export const cena03: Take[] = [
     radio: 'alerta',
     cuesDepois: [
       'a transmissão corta de uma vez: estática absoluta, 5 s',
-      'a estática baixa e fica só o som dos passos e da respiração na floresta; a batida não volta',
+      'a estática baixa e fica só a floresta e a respiração do corredor; a batida não volta',
     ],
   },
 ]

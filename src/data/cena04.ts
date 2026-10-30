@@ -27,7 +27,7 @@ export const cena04: Take[] = [
     volume: 0,
     duracaoSeg: 0,
     radio: 'buscando',
-    cuesAntes: ['a estática do fim da cena 3; passos e respiração na floresta; a batida de corrida baixa'],
+    cuesAntes: ['a estática do fim da cena 3; floresta e respiração do corredor; a batida de corrida baixa'],
     cuesDepois: ['clique: o rádio gira sozinho; o chiado sobe e desce, cortando frequências vazias'],
   },
   {

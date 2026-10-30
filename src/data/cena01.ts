@@ -223,7 +223,7 @@ export const cena01: Take[] = [
     ambiente: 'partida',
     cuesDepois: [
       'porta batendo; a caminhonete arranca e some, o zumbido do drone vai atrás dela até sumir',
-      'só a floresta e os passos do corredor entre as folhas; um chiado nasce no rádio de pulso',
+      'só a floresta; folhas roçando quando o corredor entra na mata; um chiado nasce no rádio de pulso',
     ],
   },
 

@@ -129,7 +129,7 @@ export const cena05: Take[] = [
     volume: 5,
     duracaoSeg: 7,
     radio: 'alerta',
-    cuesDepois: ['os passos ecoam num lugar fechado e úmido, chapinhando em poças', 'a batida volta ao ritmo normal'],
+    cuesDepois: ['água rasa: o pé batendo em poças, com eco de lugar fechado e úmido', 'a batida volta ao ritmo normal'],
   },
 
   // ---- Bloco 3 · O leito -------------------------------------------------------

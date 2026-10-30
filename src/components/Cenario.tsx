@@ -1308,7 +1308,7 @@ export function Cenario({ ambiente, camadas, fim, sinalPerdido = false, textoFim
     : textoFim
       ? textoFim
       : sinalPerdido
-        ? 'O rádio ficou mudo. Só estática, os passos e a respiração.'
+        ? 'O rádio ficou mudo. Só estática, a floresta e a respiração.'
         : 'Transmissão encerrada. Só o pulso e a corrida.'
   // cada ambiente novo entra com um fade; a caminhonete por dentro é um só quadro
   const chave = naCaminhonete ? 'caminhonete' : ambiente

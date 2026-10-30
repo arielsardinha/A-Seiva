@@ -26,7 +26,7 @@ export const cena02: Take[] = [
     radio: 'conectado',
     ambiente: 'mata',
     cuesAntes: [
-      'batida de corrida baixa, passos na mata, floresta',
+      'batida de corrida baixa, floresta',
       'do lado dela: teclado, estática trocando de canal, pedaços de vozes cortadas',
     ],
     escuta: ['passos', 'floresta'],
@@ -92,7 +92,7 @@ export const cena02: Take[] = [
     volume: 5,
     duracaoSeg: 7,
     radio: 'alerta',
-    cuesDepois: ['clique: a Lis corta o canal deles; só a floresta e os passos'],
+    cuesDepois: ['clique: a Lis corta o canal deles; só a floresta'],
   },
 
   // ---- Bloco 2 · Não tem como contornar (Lis) ---------------------------------
@@ -197,7 +197,7 @@ export const cena02: Take[] = [
     duracaoSeg: 2,
     radio: 'alerta',
     ambiente: 'patio',
-    cuesDepois: ['tiro de corrida: passos rápidos em terra batida, respiração forte, a batida acelera'],
+    cuesDepois: ['tiro de corrida: respiração forte, a batida acelera'],
     escuta: ['passos', 'batida', 'pulso'],
   },
   {
@@ -366,7 +366,7 @@ export const cena02: Take[] = [
     volume: 3,
     duracaoSeg: 6,
     radio: 'alerta',
-    cuesDepois: ['o canal deles fecha; só a floresta e os passos'],
+    cuesDepois: ['o canal deles fecha; só a floresta'],
   },
 
   // ---- Bloco 8 · A malha fantasma (Lis) ---------------------------------------
