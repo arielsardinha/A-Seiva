@@ -73,20 +73,21 @@ export const VISTAS_ESCUTA: Partial<Record<CamadaEscuta, string>> = {
 }
 
 /** Quem fala no take. */
-export type Personagem = 'lis' | 'dito' | 'vigia' | 'leo' | 'invasor1' | 'invasor2'
+export type Personagem = 'lis' | 'dito' | 'vigia' | 'base' | 'leo' | 'invasor1' | 'invasor2'
 
 /** Nome mostrado no cabeçalho de cada take. */
 export const PERSONAGENS: Record<Personagem, { nome: string }> = {
   lis: { nome: 'Lis' },
   dito: { nome: 'Dito' },
   vigia: { nome: 'Vigia' },
+  base: { nome: 'Base' },
   leo: { nome: 'Leo' },
   invasor1: { nome: 'Invasor 1' },
   invasor2: { nome: 'Invasor 2' },
 }
 
 export interface Take {
-  /** Identificador único na cena. Os takes da Lis usam T01, T02…; os do Dito, D01…; os do vigia, V01…; os do Leo, L01…; os dos invasores, I01… */
+  /** Identificador único na cena. Os takes da Lis usam T01, T02…; os do Dito, D01…; os do vigia, V01…; os da base, B01…; os do Leo, L01…; os dos invasores, I01… */
   id: string
   /** Quem fala. Se faltar, é a Lis. */
   quem?: Personagem
@@ -231,10 +232,10 @@ export const cena01: Take[] = [
   {
     id: 'T01',
     tipo: 'fala',
-    texto: 'Tá, tá, tá… / vai. // **Conecta.** / Conecta, por favor.',
-    direcao: 'colada no microfone, ofegante, olhando por cima do ombro',
-    volume: 3,
-    duracaoSeg: 4,
+    texto: 'Alô? // Alô. / Na escuta?',
+    direcao: 'chamando o corredor no rádio, atenta, ritmo de operadora',
+    volume: 4,
+    duracaoSeg: 3,
     radio: 'buscando',
     ambiente: 'mata',
     cuesAntes: ['do lado dela: alarme baixo e distante, algo queimando, ventilação, estática'],
@@ -242,10 +243,10 @@ export const cena01: Take[] = [
   {
     id: 'T02',
     tipo: 'fala',
-    texto: 'Alô? // Na escuta? // Na escuta?! // Aqui é a **Lis**!',
-    direcao: 'a voz sobe de uma vez. Fique abaixo do 7 no "Lis"',
-    volume: [3, 7],
-    duracaoSeg: 3,
+    texto: 'Na escuta? / Aqui é a **Lis**.',
+    direcao: 'chamando de novo, clara e direta, se apresentando',
+    volume: 4,
+    duracaoSeg: 2,
     radio: 'buscando',
   },
   {
@@ -261,9 +262,9 @@ export const cena01: Take[] = [
   {
     id: 'T03',
     tipo: 'fala',
-    texto: 'Ai, meu **Deus**. // Conectou. / Conectou! // *(respira)* Tá. / Calma, Lis. / **Foco.**',
-    direcao: 'solta o ar, depois se recompõe',
-    volume: [5, 3],
+    texto: 'Pronto, / te achei. // **Ótimo**, / porque eu tenho muita coisa pra te explicar / e pouco tempo.',
+    direcao: 'satisfeita, um sorriso rápido, e já engata no assunto acelerando',
+    volume: 5,
     duracaoSeg: 5,
     radio: 'conectado',
   },

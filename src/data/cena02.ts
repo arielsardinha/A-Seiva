@@ -2,8 +2,8 @@
 //  A SEIVA · CENA 2 · Setor 7 (perímetro fechado, o pátio e a malha fantasma)
 //
 //  Mesmo formato e mesmas marcas da cena 1 (veja o topo de cena01.ts).
-//  Os takes do vigia (V01…) são gravados na voz natural, sem RVC; o filtro de
-//  rádio portátil entra na edição. *(pausa)* no vigia é a base respondendo.
+//  Os takes do vigia (V01…) e da base (B01…) entram com o filtro de rádio
+//  portátil na edição: a base é o outro vigia, que atende o rádio.
 // =============================================================================
 
 import type { Take } from './cena01'
@@ -52,11 +52,21 @@ export const cena02: Take[] = [
     radio: 'conectado',
   },
   {
+    id: 'B01',
+    quem: 'base',
+    tipo: 'fala',
+    texto: 'Copiado, torre dois. // Aguenta firme, é o último turno.',
+    direcao: 'confirmação de rotina, entediada, provocando um pouco',
+    volume: 4,
+    duracaoSeg: 4,
+    radio: 'conectado',
+  },
+  {
     id: 'V02',
     quem: 'vigia',
     tipo: 'fala',
     texto: 'É, eu sei que é o último turno. // Cê me fala isso todo dia.',
-    direcao: 'a pausa é a base respondendo. Ri sem vontade',
+    direcao: 'a base acabou de falar do último turno. Ri sem vontade',
     volume: 4,
     duracaoSeg: 6,
     radio: 'conectado',
@@ -74,11 +84,21 @@ export const cena02: Take[] = [
     cuesAntes: ['bipe curto no equipamento dele'],
   },
   {
+    id: 'B02',
+    quem: 'base',
+    tipo: 'fala',
+    texto: 'Deve ser anta de novo.',
+    direcao: 'sem interesse, já ouviu isso antes',
+    volume: 4,
+    duracaoSeg: 2,
+    radio: 'alerta',
+  },
+  {
     id: 'V04',
     quem: 'vigia',
     tipo: 'fala',
-    texto: '*(pausa)* // Não, não é anta. // Anta não corre em linha **reta**.',
-    direcao: 'a pausa é a base. Responde cada vez mais certo',
+    texto: 'Não, não é anta. // Anta não corre em linha **reta**.',
+    direcao: 'responde a base, cada vez mais certo',
     volume: 5,
     duracaoSeg: 6,
     radio: 'alerta',
@@ -91,6 +111,16 @@ export const cena02: Take[] = [
     direcao: 'sério agora, profissional. O tédio sumiu',
     volume: 5,
     duracaoSeg: 7,
+    radio: 'alerta',
+  },
+  {
+    id: 'B03',
+    quem: 'base',
+    tipo: 'fala',
+    texto: 'Copiado. // Fechando a cerca norte.',
+    direcao: 'rápido e profissional, agora prestando atenção',
+    volume: 4,
+    duracaoSeg: 3,
     radio: 'alerta',
     cuesDepois: ['clique: a Lis corta o canal deles; só a floresta'],
   },
@@ -263,6 +293,16 @@ export const cena02: Take[] = [
     radio: 'alerta',
   },
   {
+    id: 'B04',
+    quem: 'base',
+    tipo: 'fala',
+    texto: 'Pode ser reflexo. // Quer que eu mande alguém olhar?',
+    direcao: 'cético, com preguiça',
+    volume: 4,
+    duracaoSeg: 4,
+    radio: 'alerta',
+  },
+  {
     id: 'T18',
     tipo: 'fala',
     texto: 'Coração disparado é **calor**. // E calor é tudo que eles enxergam.',
@@ -351,12 +391,32 @@ export const cena02: Take[] = [
     id: 'V08',
     quem: 'vigia',
     tipo: 'fala',
-    texto: 'Base. // Ele saiu pelo sul. // *(pausa)* Não. Cachorro não passa da mata. // Manda os **varredores**.',
-    direcao: 'frio, sem pressa. Mais assustador calmo do que bravo',
+    texto: 'Base. // Ele saiu pelo **sul**.',
+    direcao: 'frio, sem pressa',
     volume: 5,
-    duracaoSeg: 9,
+    duracaoSeg: 3,
     radio: 'alerta',
     cuesAntes: ['clique: o canal deles uma última vez, os latidos ficando para trás'],
+  },
+  {
+    id: 'B05',
+    quem: 'base',
+    tipo: 'fala',
+    texto: 'Solta os cachorros na mata atrás dele?',
+    direcao: 'pergunta rápida, pedindo a ordem',
+    volume: 4,
+    duracaoSeg: 3,
+    radio: 'alerta',
+  },
+  {
+    id: 'V09',
+    quem: 'vigia',
+    tipo: 'fala',
+    texto: 'Não. // Cachorro não passa da mata. // Manda os **varredores**.',
+    direcao: 'frio, sem pressa. Mais assustador calmo do que bravo',
+    volume: 5,
+    duracaoSeg: 6,
+    radio: 'alerta',
   },
   {
     id: 'T25',

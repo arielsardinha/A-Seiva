@@ -63,8 +63,8 @@ describe('ambiente na cena 3', () => {
   const falas = cena03.filter((t) => t.tipo === 'fala')
   const em = (id: string) => ambienteDoTake(falas, falas.findIndex((t) => t.id === id))
 
-  it('sai da malha e entra na calmaria do chão aceso', () => {
-    expect(em('T01')).toBe('malha')
+  it('começa na mata, depois da malha, e entra na calmaria do chão aceso', () => {
+    expect(em('T01')).toBe('mata')
     expect(em('T02')).toBe('mata')
     expect(em('T04')).toBe('calmaria')
     expect(em('T12')).toBe('calmaria')
